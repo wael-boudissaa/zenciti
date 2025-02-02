@@ -27,4 +27,18 @@ class AuthRepositoryImpl implements AuthRepo {
       throw Exception('Failed to register user');
     }
   }
+
+  @override
+  Future<void> login(LoginUser user) async {
+              print (user.email);
+              print (user.password);
+  
+      final Map response = await apiClient.post('/login', {
+        'email': user.email,
+        'password': user.password,
+      });
+    if (response['status'] != 'success') {
+      throw Exception('Failed to register user');
+    }
+  }
 }

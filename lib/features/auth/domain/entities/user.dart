@@ -7,3 +7,14 @@ class User {
   final String phone;
   User({required this.firstName, required this.password, required this.address, required this.phone,required this.lastName, required this.email});
 }
+
+class LoginUser {
+    final String email;
+    final String password;
+    LoginUser({required this.email, required this.password});
+    @override
+      String toString() {
+        // TODO: implement toString
+        return "email:$email password:$password";
+      }
+}

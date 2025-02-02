@@ -1,6 +1,8 @@
 // features/auth/presentation/screens/sign_up.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zenciti/features/auth/domain/entities/user.dart';
+import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
 import 'package:zenciti/features/auth/presentation/widgets/auth_field.dart';
 import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:zenciti/features/auth/presentation/blocs/sign_up_event.dart';
@@ -95,6 +97,18 @@ class _SignUpState extends State<SignUp> {
                       },
                       child: const Text('Sign Up'),
                     ),
+                    TextButton(
+              onPressed: () {
+Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => BlocProvider.value(
+    value: context.read<LoginBloc>(),
+    child: LoginScreen(),
+  )),
+);
+              },
+              child: Text('Already have an account? Login'),
+            ),
                     if (state is SignUpLoading)
                       CircularProgressIndicator(), // Show a loading indicator
                   ],

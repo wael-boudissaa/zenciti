@@ -1,8 +1,8 @@
-// main.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/features/auth/data/api/api_client.dart';
 import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
+import 'package:zenciti/features/auth/domain/usecase/login_use_case.dart';
 import 'package:zenciti/features/auth/domain/usecase/register_use_case.dart';
 import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:zenciti/features/auth/presentation/screens/sign_up.dart';
@@ -16,9 +16,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider(
+        RepositoryProvider<AuthRepositoryImpl>(
           create: (context) => AuthRepositoryImpl(
-              apiClient: ApiClient(baseUrl:"http://localhost:8080")
+            apiClient: ApiClient(baseUrl: "http://localhost:8080"),
           ),
         ),
       ],
@@ -31,8 +31,16 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
+          BlocProvider(
+            create: (context) => LoginBloc(
+              LoginUseCase(
+                context.read<AuthRepositoryImpl>(),
+              ),
+            ),
+          ),
         ],
         child: MaterialApp(
+          debugShowCheckedModeBanner: false, // Hide debug banner
           home: SignUp(),
         ),
       ),
