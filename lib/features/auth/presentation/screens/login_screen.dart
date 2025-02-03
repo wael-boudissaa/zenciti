@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:zenciti/features/auth/presentation/blocs/login_event.dart';
+import 'package:zenciti/features/auth/presentation/screens/home_screen.dart';
 import 'package:zenciti/features/auth/presentation/widgets/auth_field.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -16,8 +17,13 @@ class LoginScreen extends StatelessWidget {
       body: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            // Navigate to home screen or store token
-            // print('Token: ${state.token}');
+              Navigator.push(
+  context,
+  MaterialPageRoute(builder: (context) => BlocProvider.value(
+    value: context.read<LoginBloc>(),
+    child: HomeScreen(),
+  )));
+
           } else if (state is LoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error)),

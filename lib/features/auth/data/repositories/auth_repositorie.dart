@@ -1,8 +1,14 @@
 // data/repositories/auth_repository_impl.dart
+// import 'package:zenciti/core/utils/token.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
 import 'package:zenciti/features/auth/domain/repositories/auth_repo.dart';
+import '../../../../core/utils/token.dart';
 import '../api/api_client.dart';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+import 'dart:convert';
+final storage = FlutterSecureStorage();
 class AuthRepositoryImpl implements AuthRepo {
   final ApiClient apiClient;
 
@@ -26,19 +32,27 @@ class AuthRepositoryImpl implements AuthRepo {
     if (response['status'] != 'success') {
       throw Exception('Failed to register user');
     }
+    else { 
+
+        String refreshToken = response['token'];
+        await saveTokens(refreshToken);
+
+    }
   }
+
 
   @override
   Future<void> login(LoginUser user) async {
-              print (user.email);
-              print (user.password);
   
       final Map response = await apiClient.post('/login', {
         'email': user.email,
         'password': user.password,
       });
-    if (response['status'] != 'success') {
-      throw Exception('Failed to register user');
-    }
+      if (response.containsKey('error')) {
+        throw Exception(response['error']);
+      } else {
+        String refreshToken = response['token'];
+        await saveTokens(refreshToken);
+      }
   }
 }

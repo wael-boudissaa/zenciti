@@ -13,12 +13,13 @@ void main() {
 
 class MyApp extends StatelessWidget {
   @override
+
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepositoryImpl>(
           create: (context) => AuthRepositoryImpl(
-            apiClient: ApiClient(baseUrl: "http://localhost:8080"),
+            apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
           ),
         ),
       ],

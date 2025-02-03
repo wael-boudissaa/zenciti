@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer'; // Import developer for logging
 import 'package:http/http.dart' as http;
+import 'package:zenciti/core/utils/token.dart';
 
 class ApiClient {
   final String baseUrl;
@@ -8,9 +9,13 @@ class ApiClient {
   ApiClient({required this.baseUrl});
 
   Future<Map<String, dynamic>> post(String endpoint, Map<String, dynamic> body) async {
+        String? token = await getAccessToken();
+
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', 
+          // "Authorization": "Bearer $token",
+},
       body: jsonEncode(body),
     );
 
