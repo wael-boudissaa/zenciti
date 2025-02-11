@@ -5,6 +5,7 @@ import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
 import 'package:zenciti/features/auth/domain/usecase/login_use_case.dart';
 import 'package:zenciti/features/auth/domain/usecase/register_use_case.dart';
 import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
 import 'package:zenciti/features/auth/presentation/screens/sign_up.dart';
 
 void main() {
@@ -13,25 +14,18 @@ void main() {
 
 class MyApp extends StatelessWidget {
   @override
-
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthRepositoryImpl>(
           create: (context) => AuthRepositoryImpl(
             apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
+            // apiClient: ApiClient(baseUrl: "http://172.20.10.5:8080"),
           ),
         ),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider(
-            create: (context) => SignUpBloc(
-              RegisterUseCase(
-                context.read<AuthRepositoryImpl>(),
-              ),
-            ),
-          ),
           BlocProvider(
             create: (context) => LoginBloc(
               LoginUseCase(
@@ -39,10 +33,19 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
+          // BlocProvider(
+          //     create: (context) => LoginBloc(LoginUseCase(context.read()))),
+          BlocProvider(
+            create: (context) => SignUpBloc(
+              RegisterUseCase(
+                context.read<AuthRepositoryImpl>(),
+              ),
+            ),
+          ),
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false, // Hide debug banner
-          home: SignUp(),
+        child: const MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: LoginScreen(),
         ),
       ),
     );
