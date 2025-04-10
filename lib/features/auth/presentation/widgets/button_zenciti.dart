@@ -1,17 +1,24 @@
 
 import 'package:flutter/material.dart';
-class ButtonRushCoif extends StatelessWidget
+class ButtonBlack extends StatelessWidget
 {
     final String textstring;
+
     final  void Function() onPressed;
 
-    const ButtonRushCoif({Key? key,required String this.textstring,required this.onPressed}) : super(key: key);
+    const ButtonBlack({Key? key,required String this.textstring,required this.onPressed}) : super(key: key);
     @override
     Widget build(BuildContext context) {
         return  ElevatedButton(
+            
             onPressed:onPressed,
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
+                backgroundColor: MaterialStateProperty.all(Colors.black),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                    ),
+                ),
             ),
             child: Padding(
               padding: const EdgeInsets.all(10.0),

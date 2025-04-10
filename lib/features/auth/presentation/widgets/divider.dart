@@ -17,7 +17,7 @@ class DividerOr extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 8.0), // Space around "or"
       child: Text(
         "OR",
-        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
       ),
     ),
     Expanded(

@@ -1,6 +1,5 @@
 // features/auth/presentation/bloc/sign_up_bloc.dart
 
-import 'dart:developer'; // Import developer for logging
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
 import 'package:zenciti/features/auth/domain/usecase/login_use_case.dart';
