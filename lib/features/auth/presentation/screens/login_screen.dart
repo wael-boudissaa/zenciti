@@ -122,8 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       FTextField(
                         controller: _emailController,
                         label: const Text('Email Address'),
-                        hint: 'Example',
-                        description: const Text('Please enter your username.'),
+                        hint: 'example@gmail.com',
                         maxLines: 1,
                       ),
                       const SizedBox(height: 22),

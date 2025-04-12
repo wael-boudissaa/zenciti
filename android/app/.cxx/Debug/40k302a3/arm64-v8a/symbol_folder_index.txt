@@ -1,0 +1,1 @@
+/home/wael-boudissa/Desktop/Project/Zenciti/zenciti/build/app/intermediates/cxx/Debug/40k302a3/obj/arm64-v8a

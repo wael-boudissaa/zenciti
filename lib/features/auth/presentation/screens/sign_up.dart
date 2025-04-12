@@ -10,6 +10,7 @@ import 'package:zenciti/features/auth/presentation/blocs/sign_up_event.dart';
 import 'package:zenciti/features/auth/presentation/widgets/button_zenciti.dart';
 import 'package:zenciti/features/auth/presentation/widgets/divider.dart';
 import 'package:zenciti/features/auth/presentation/widgets/google_sign_in_button.dart';
+import 'package:zenciti/features/home/presentation/screens/home_screen.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -76,28 +77,24 @@ class _SignUpState extends State<SignUp> {
                           ),
                           const SizedBox(height: 30),
                           AuthField(
-                            textlabel: "Name",
-                            controller: textFirstName,
-                            description: "Please enter your name."
-                          ),
+                              textlabel: "Name",
+                              controller: textFirstName,
+                              description: "Please enter your name."),
                           const SizedBox(height: 15),
                           AuthField(
-                            controller: textLastName,
-                            textlabel: "Last Name",
-                            description: "Please enter your Last name."
-                          ),
+                              controller: textLastName,
+                              textlabel: "Last Name",
+                              description: "Please enter your Last name."),
                           const SizedBox(height: 15),
                           AuthField(
-                            controller: textEmail,
-                            textlabel: "Email",
-                            description: "Please enter your email."
-                          ),
+                              controller: textEmail,
+                              textlabel: "Email",
+                              description: "Please enter your email."),
                           const SizedBox(height: 15),
                           AuthField(
-                            controller: textAddress,
-                            textlabel: "Address",
-                            description: "Please enter your address."
-                          ),
+                              controller: textAddress,
+                              textlabel: "Address",
+                              description: "Please enter your address."),
                           const SizedBox(height: 15),
                           AuthField(
                             controller: textPassword,
@@ -150,6 +147,11 @@ class _SignUpState extends State<SignUp> {
                                         phone: textPhone.text,
                                       ),
                                     );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage()),
+                                );
                               },
                               textstring: "S'inscrire",
                             ),

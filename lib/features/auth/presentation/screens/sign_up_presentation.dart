@@ -32,7 +32,7 @@ class _SignUpPresentationState extends State<SignUpPresentation>
                 Text(
                   "Explore Now",
                   style: TextStyle(
-                    fontSize: 65,
+                    fontSize: 55,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
                   ),
@@ -40,8 +40,8 @@ class _SignUpPresentationState extends State<SignUpPresentation>
                 Text(
                   "Join Zenciti Today",
                   style: TextStyle(
-                    fontSize: 45,
-                    fontWeight: FontWeight.w700,
+                    fontSize: 35,
+                fontWeight: FontWeight.w900,
                     color: Colors.black,
                   ),
                 ),

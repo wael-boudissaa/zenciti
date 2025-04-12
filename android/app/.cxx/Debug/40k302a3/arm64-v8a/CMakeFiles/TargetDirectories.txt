@@ -1,0 +1,2 @@
+/home/wael-boudissa/Desktop/Project/Zenciti/zenciti/android/app/.cxx/Debug/40k302a3/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/wael-boudissa/Desktop/Project/Zenciti/zenciti/android/app/.cxx/Debug/40k302a3/arm64-v8a/CMakeFiles/rebuild_cache.dir
