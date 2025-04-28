@@ -1,20 +1,19 @@
-class User {
-  final String firstName;
-  final String password;
-  final String lastName;
-  final String email;
-  final String address;
-  final String phone;
-  User({required this.firstName, required this.password, required this.address, required this.phone,required this.lastName, required this.email});
-}
+class ActivityType {
+  final String idTypeActivity;
+  final String nameTypeActivity;
+  final String imageActivity;
 
-class LoginUser {
-    final String email;
-    final String password;
-    LoginUser({required this.email, required this.password});
-    @override
-      String toString() {
-        // TODO: implement toString
-        return "email:$email password:$password";
-      }
+  ActivityType({
+    required this.idTypeActivity,
+    required this.nameTypeActivity,
+    required this.imageActivity,
+  });
+
+  factory ActivityType.fromJson(Map<String, dynamic> json) {
+    return ActivityType(
+      idTypeActivity: json['idTypeAcitvity'], // typo preserved as in Go
+      nameTypeActivity: json['nameTypeActivity'],
+      imageActivity: json['imageActivity'],
+    );
+  }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:zenciti/app/config/theme.dart';
 import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
 import 'package:zenciti/features/auth/domain/usecase/register_use_case.dart';
@@ -14,6 +16,7 @@ import 'package:zenciti/features/auth/presentation/widgets/divider.dart';
 import 'package:zenciti/features/auth/presentation/widgets/google_sign_in_button.dart';
 
 import 'package:forui/forui.dart';
+import 'package:zenciti/features/home/presentation/screens/home_page.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -137,15 +140,21 @@ class _LoginScreenState extends State<LoginScreen> {
                           ButtonBlack(
                             textstring: 'Se Connecter',
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                context.read<LoginBloc>().add(
-                                      LoginSubmitted(
-                                        email: _emailController.text.trim(),
-                                        password:
-                                            _passwordController.text.trim(),
-                                      ),
-                                    );
-                              }
+                              // if (_formKey.currentState!.validate()) {
+                              //   context.read<LoginBloc>().add(
+                              //         LoginSubmitted(
+                              //           email: _emailController.text.trim(),
+                              //           password:
+                              //               _passwordController.text.trim(),
+                              //         ),
+                              //       );
+                              // }
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => Home_Page(),
+                              //     ));
+                                context.go('/home');
                             },
                           ),
                         ],

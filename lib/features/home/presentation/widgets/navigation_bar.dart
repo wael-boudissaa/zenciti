@@ -22,20 +22,20 @@ FBottomNavigationBarItem(
             label: const Text('Home'),
           ),
           FBottomNavigationBarItem(
-            icon: FIcon(FAssets.icons.layoutGrid),
-            label: Text('Browse'),
+            icon: FIcon(FAssets.icons.file),
+            label: Text('Statistics'),
           ),
+          // FBottomNavigationBarItem(
+          //   icon: FIcon(FAssets.icons.radio),
+          //   label: Text('Radio'),
+          // ),
+          // FBottomNavigationBarItem(
+          //   icon: FIcon(FAssets.icons.libraryBig),
+          //   label: Text('Library'),
+          // ),
           FBottomNavigationBarItem(
-            icon: FIcon(FAssets.icons.radio),
-            label: Text('Radio'),
-          ),
-          FBottomNavigationBarItem(
-            icon: FIcon(FAssets.icons.libraryBig),
-            label: Text('Library'),
-          ),
-          FBottomNavigationBarItem(
-            icon: FIcon(FAssets.icons.search),
-            label: Text('Search'),
+            icon: FIcon(FAssets.icons.user),
+            label: Text('Profile'),
           ),
         ],
       );
