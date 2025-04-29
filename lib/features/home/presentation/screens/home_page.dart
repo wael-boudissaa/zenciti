@@ -91,6 +91,11 @@ class _Home_PageState extends State<Home_Page> {
                             // Navigate to activity details
                             context.go('/home/type/${activity.idTypeActivity}',
                                 extra: activity);
+                            context.read<ActivityBloc>().add(
+                                  ActivityGet(
+                                    activity.idTypeActivity,
+                                  ),
+                                );
                           },
                           child: Padding(
                             padding:

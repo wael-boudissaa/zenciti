@@ -8,6 +8,9 @@ abstract class ActivityEvent extends Equatable {
 }
 
 class ActivityGet extends ActivityEvent {
+      final String activityType;
+
+  ActivityGet( this.activityType);
   
 }
 

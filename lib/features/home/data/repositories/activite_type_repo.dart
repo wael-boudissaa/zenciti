@@ -41,4 +41,20 @@ class ActiviteTypeRepoImp implements ActivityRepo {
       throw Exception('Failed to load activity types');
     }
   }
+
+  @override
+  Future<List<Activity>> getActivitiesByType(String activityType)async {
+      try{
+          final response = await apiClient.get('/activite/type/$activityType');
+          final List<dynamic> data = response['data'];
+          final activities = data.map((json) => Activity.fromJson(json)).toList();
+          return activities;
+
+
+      }catch(e){
+        print('Error fetching activities by type: $e');
+        throw Exception('Failed to load activities by type');
+      }
+  }
+
 }

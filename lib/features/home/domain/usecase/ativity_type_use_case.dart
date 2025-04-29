@@ -3,13 +3,13 @@
 import 'package:zenciti/features/home/domain/entities/activity.dart';
 import 'package:zenciti/features/home/domain/repositories/activity_repo.dart';
 
-class ActivityUseCase {
+class ActivityTypeUseCase {
   final ActivityRepo _repository;
 
-  ActivityUseCase(this._repository);
+  ActivityTypeUseCase(this._repository);
 
-  Future<List<Activity>> execute( String id) async {
-    return await _repository.getActivitiesByType(id);
+  Future<List<TypeActivity>> execute() async {
+    return await _repository.getTypeActivities();
   }
 
 }

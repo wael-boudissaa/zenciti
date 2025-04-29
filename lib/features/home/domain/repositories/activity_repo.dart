@@ -5,6 +5,7 @@ abstract class ActivityRepo {
     // Future<void> updateActivity(String activityId, String activityName, String activityDescription, String activityType, String activityDate, String activityTime);
     // Future<void> deleteActivity(String activityId);
     Future<List<TypeActivity>> getTypeActivities();
+    Future<List<Activity>> getActivitiesByType(String activityType);
     // Future<Activity> getActivityById(String activityId);
 
 }

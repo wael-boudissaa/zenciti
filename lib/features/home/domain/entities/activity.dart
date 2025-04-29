@@ -27,3 +27,44 @@ class TypeActivity {
     return 'TypeActivity{idTypeActivity: $idTypeActivity, nameTypeActivity: $nameTypeActivity, imageActivity: $imageActivity}';
   }
 }
+
+class Activity{
+    String idActivity;
+    String nameActivity;
+    String descriptionActivity;
+    String typeActivity;
+    String imageActivity;
+    int popularity;
+    Activity({
+        required this.idActivity,
+        required this.nameActivity,
+        required this.descriptionActivity,
+        required this.typeActivity,
+        required this.imageActivity,
+        required this.popularity,
+    });
+    factory Activity.fromJson(Map<String, dynamic> json) {
+        return Activity(
+        idActivity: json['idActivity'],
+        nameActivity: json['nameActivity'],
+        descriptionActivity: json['descriptionActivity'],
+        typeActivity: json['typeActivity'],
+        imageActivity: json['imageActivity'],
+        popularity: json['popularity'],
+        );
+    }
+    Map<String, dynamic> toJson() {
+        return {
+        'idActivity': idActivity,
+        'nameActivity': nameActivity,
+        'descriptionActivity': descriptionActivity,
+        'typeActivity': typeActivity,
+        'imageActivity': imageActivity,
+        'popularity': popularity,
+        };
+    }
+    @override
+    String toString() {
+        return 'Activity{idActivity: $idActivity, nameActivity: $nameActivity, descriptionActivity: $descriptionActivity, typeActivity: $typeActivity, imageActivity: $imageActivity, popularity: $popularity}';
+    }
+}

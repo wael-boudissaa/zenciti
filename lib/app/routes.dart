@@ -28,7 +28,9 @@ class AppRouter {
           builder: (context, state) {
             final activity = state.extra as TypeActivity;
 
-            return ActivityType(activityType: activity);
+            return ActivityType(
+                activityType: activity,
+            );
           }),
     ],
   );

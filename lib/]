@@ -3,21 +3,18 @@ import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/features/home/domain/entities/activity.dart';
 import 'package:zenciti/features/home/domain/usecase/ativity_type_use_case.dart';
-import 'package:zenciti/features/home/domain/usecase/ativity_use_case.dart';
-
 import 'package:zenciti/features/home/presentation/blocs/activity_event.dart';
 
 part 'activity_state.dart';
 
 class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
   final ActivityTypeUseCase activityTypeUseCase;
-  final ActivityUseCase activityUseCase;
+  final ActivityeUseCase activityUseCase;
 
   // Define initial state
-ActivityBloc(this.activityTypeUseCase, this.activityUseCase) : super(ActivityInitials()) {
-  on<ActivityTypeGet>(_onActivityTypeGet);
-  on<ActivityGet>(_onActivityGetByType);
-}
+  ActivityBloc(this.activityTypeUseCase) : super(ActivityInitials()) {
+    on<ActivityTypeGet>(_onActivityTypeGet);
+  }
 
   Future<void> _onActivityTypeGet(
     ActivityTypeGet event,
@@ -59,45 +56,46 @@ ActivityBloc(this.activityTypeUseCase, this.activityUseCase) : super(ActivityIni
               
             }
   }
-
-
-
-Future<void> _onActivityGetByType(
-  ActivityGet event,
-  Emitter<ActivityState> emit,
-) async {
-  emit(ActivityLoading());
-
-  try {
-
-    final activities = await activityUseCase.execute(event.activityType);
-
-    log("Fetched Activities: $activities");
-
-    // Emit success state with the fetched activities
-    emit(ActivitySuccess(
-      activities
-          .map((activity) => Activity(
-                idActivity: activity.idActivity,
-                nameActivity: activity.nameActivity,
-                descriptionActivity: activity.descriptionActivity,
-                typeActivity: activity.typeActivity,
-                imageActivity: activity.imageActivity,
-                popularity: activity.popularity,
-              ))
-          .toList(),
-    ));
-  } catch (e, stackTrace) {
-    log("Error fetching activities", error: e, stackTrace: stackTrace);
-    emit(ActivityFailure(e.toString()));
-  }
 }
 
 
+Future <void> _onActivityGetByType (
+        ActivityGet event,
 
+    Emitter <ActivityState> emit,
+) async { 
+    try{
 
+    // Show loading spinner
+    emit(ActivityLoading());
+
+    try {
+      // Fetch activities from the use case
+      final activities = await activity.execute();
+
+      // Debug print to verify what we got from backend
+      log("Fetched Activities: $activities");
+
+      // Emit success state with the fetched activities
+      emit(ActivitySuccess(
+        activities
+            .map((activity) => TypeActivity(
+                  idTypeActivity: activity.idTypeActivity,
+                  nameTypeActivity: activity.nameTypeActivity,
+                  imageActivity: activity.imageActivity,
+                ))
+            .toList(),
+      ));
+    } catch (e, stackTrace) {
+      // Log the error for debugging
+      log("Error fetching activities", error: e, stackTrace: stackTrace);
+
+      // Emit failure state with error message
+      emit(ActivityFailure(e.toString()));
+    }
+
+    }
 }
-
 //   Future<void> _onSignUpSubmitted(
 //     SignUpSubmitted event,
 //     Emitter<SignUpState> emit,

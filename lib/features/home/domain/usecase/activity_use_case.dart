@@ -1,3 +1,4 @@
+
 // domain/use_cases/login_use_case.dart
 
 import 'package:zenciti/features/home/domain/entities/activity.dart';
@@ -8,8 +9,9 @@ class ActivityUseCase {
 
   ActivityUseCase(this._repository);
 
-  Future<List<Activity>> execute( String id) async {
-    return await _repository.getActivitiesByType(id);
+  Future<List<Activity>> execute() async {
+
+    return await _repository.getActivitiesByType('type3');
   }
 
 }
