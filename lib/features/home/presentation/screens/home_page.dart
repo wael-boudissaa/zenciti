@@ -8,6 +8,7 @@ import 'package:zenciti/features/home/presentation/blocs/activity_event.dart';
 // import 'package:zenciti/features/home/presentation/blocs/activity_state.dart'; // You forgot to import the state file
 
 import 'package:go_router/go_router.dart';
+import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 
 class Home_Page extends StatefulWidget {
   const Home_Page({super.key});
@@ -20,38 +21,12 @@ class _Home_PageState extends State<Home_Page> {
   @override
   void initState() {
     super.initState();
-    context.read<ActivityBloc>().add(ActivityGet(id: "1"));
+    context.read<ActivityBloc>().add(ActivityTypeGet());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Text(
-          'Hello Wael',
-          style: TextStyle(
-            color: AppColors.greenPrimary,
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              backgroundImage: NetworkImage(
-                "https://docs.flutter.dev/assets/images/dash/dash-fainting.gif",
-              ),
-              radius: 20,
-            ),
-          ),
-        ],
-        backgroundColor: Colors.white,
-        elevation: 2,
-      ),
-      body: Padding(
+    return Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -96,10 +71,10 @@ class _Home_PageState extends State<Home_Page> {
                 builder: (context, state) {
                   if (state is ActivityLoading) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (state is AcitivityFailure) {
+                  } else if (state is ActivityFailure) {
                     return const Center(
                         child: Text('Error loading activities.'));
-                  } else if (state is ActivitySucces) {
+                  } else if (state is ActivitySuccess) {
                     final activities = state.activities;
 
                     if (activities.isEmpty) {
@@ -114,21 +89,25 @@ class _Home_PageState extends State<Home_Page> {
                         return GestureDetector(
                           onTap: () {
                             // Navigate to activity details
-                            context.go('/home');
+                            context.go('/home/type/${activity.idTypeActivity}',
+                                extra: activity);
                           },
                           child: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Column(
                               children: [
-                                CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(activity.imageActivity),
-                                  radius: 30,
-                                  onBackgroundImageError: (_, __) {
-                                    print('Image failed to load');
-                                  },
-                                ),
+                                if (activity.imageActivity != null)
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        NetworkImage(activity.imageActivity!),
+                                    radius: 30,
+                                  )
+                                else
+                                  CircleAvatar(
+                                    child: Icon(Icons.error),
+                                    radius: 30,
+                                  ),
                                 const SizedBox(height: 8),
                                 Text(
                                   activity.nameTypeActivity,
@@ -161,10 +140,10 @@ class _Home_PageState extends State<Home_Page> {
                 builder: (context, state) {
                   if (state is ActivityLoading) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (state is AcitivityFailure) {
+                  } else if (state is ActivityFailure) {
                     return const Center(
                         child: Text('Error loading activities.'));
-                  } else if (state is ActivitySucces) {
+                  } else if (state is ActivitySuccess) {
                     final activities = state.activities;
 
                     if (activities.isEmpty) {
@@ -202,8 +181,6 @@ class _Home_PageState extends State<Home_Page> {
               ),
             ),
           ],
-        ),
-      ),
-    );
+        ));
   }
 }

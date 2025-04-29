@@ -12,11 +12,11 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
 
   // Define initial state
   ActivityBloc(this.activityUseCase) : super(ActivityInitials()) {
-    on<ActivityGet>(_onActivityGet);
+    on<ActivityTypeGet>(_onActivityTypeGet);
   }
 
-  Future<void> _onActivityGet(
-    ActivityGet event,
+  Future<void> _onActivityTypeGet(
+    ActivityTypeGet event,
     Emitter<ActivityState> emit,
   ) async {
     // Show loading spinner
@@ -30,7 +30,7 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
       log("Fetched Activities: $activities");
 
       // Emit success state with the fetched activities
-      emit(ActivitySucces(
+      emit(ActivitySuccess(
         activities
             .map((activity) => TypeActivity(
                   idTypeActivity: activity.idTypeActivity,
@@ -44,7 +44,7 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
       log("Error fetching activities", error: e, stackTrace: stackTrace);
 
       // Emit failure state with error message
-      emit(AcitivityFailure(e.toString()));
+      emit(ActivityFailure(e.toString()));
     }
   }
 
@@ -55,6 +55,16 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
               
             }
   }
+}
+
+
+Future <void> _onActivityGetByType () async { 
+    try{
+
+    }
+    catch (error) {
+      
+    }
 }
 //   Future<void> _onSignUpSubmitted(
 //     SignUpSubmitted event,

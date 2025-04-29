@@ -1,19 +1,19 @@
 part of 'activity_bloc.dart';
-abstract class ActivityState {}
 
-class ActivityInitials extends ActivityState {}
+abstract class ActivityState<T> {}
 
-class ActivityLoading extends ActivityState {
+class ActivityInitials<T> extends ActivityState<T> {}
+
+class ActivityLoading<T> extends ActivityState<T> {}
+
+class ActivitySuccess<T> extends ActivityState<T> {
+  final List<T> activities;
+
+  ActivitySuccess(this.activities);
 }
 
-class ActivitySucces extends ActivityState {
-      final List<TypeActivity> activities;
-
-  ActivitySucces(this.activities);
-}
-
-class AcitivityFailure extends ActivityState {
+class ActivityFailure<T> extends ActivityState<T> {
   final String error;
 
-  AcitivityFailure(this.error);
+  ActivityFailure(this.error);
 }

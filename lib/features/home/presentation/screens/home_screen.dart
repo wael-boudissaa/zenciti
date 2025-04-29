@@ -8,6 +8,7 @@ import 'package:zenciti/features/home/domain/usecase/ativity_use_case.dart'
 import 'package:zenciti/features/home/presentation/blocs/activity_bloc.dart';
 import 'package:zenciti/features/home/presentation/blocs/activity_event.dart';
 import 'package:zenciti/features/home/presentation/screens/home_page.dart';
+import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 import 'package:zenciti/features/home/presentation/widgets/navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
               apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
             ),
           ),
-        )..add(ActivityGet(id: "1")),
+        ),
         child: Home_Page(), // your real home scree
       ),
       const Center(child: Text('Browse')),
@@ -40,6 +41,7 @@ class _HomePageState extends State<HomePage> {
     ];
 
     return Scaffold(
+        appBar:AppBarHome(),
       body: _pages[_currentIndex],
       bottomNavigationBar: NavigationBarW(
         index: _currentIndex,

@@ -8,10 +8,10 @@ abstract class ActivityEvent extends Equatable {
 }
 
 class ActivityGet extends ActivityEvent {
-  final String id;
   
-  const ActivityGet({required this.id});
-  
-  @override
-  List<Object> get props => [id];
 }
+
+class ActivityTypeGet extends ActivityEvent {
+  
+}
+

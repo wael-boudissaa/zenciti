@@ -1,21 +1,28 @@
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zenciti/app/config/theme.dart';
 
-class AppBarHome extends StatefulWidget implements PreferredSizeWidget {
-  const AppBarHome({super.key});
+class AppBarPages extends StatefulWidget implements PreferredSizeWidget {
+  const AppBarPages({super.key});
 
   @override
-  State<AppBarHome> createState() => _AppBarHomeState();
+  State<AppBarPages> createState() => _AppBarPagesState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight); 
 }
 
-class _AppBarHomeState extends State<AppBarHome> {
+class _AppBarPagesState extends State<AppBarPages> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
+      leading:  IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+            onPressed: () {
+                context.go('/home');
+            }),
       title: const Text(
         'Hello Wael',
         style: TextStyle(
