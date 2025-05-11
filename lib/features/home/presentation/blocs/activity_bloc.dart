@@ -2,157 +2,46 @@ import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/features/home/domain/entities/activity.dart';
-import 'package:zenciti/features/home/domain/usecase/ativity_type_use_case.dart';
 import 'package:zenciti/features/home/domain/usecase/ativity_use_case.dart';
-
 import 'package:zenciti/features/home/presentation/blocs/activity_event.dart';
-
-part 'activity_state.dart';
+import 'package:zenciti/features/home/presentation/blocs/activity_type_bloc.dart';
 
 class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
-  final ActivityTypeUseCase activityTypeUseCase;
   final ActivityUseCase activityUseCase;
 
-  // Define initial state
-ActivityBloc(this.activityTypeUseCase, this.activityUseCase) : super(ActivityInitials()) {
-  on<ActivityTypeGet>(_onActivityTypeGet);
-  on<ActivityGet>(_onActivityGetByType);
-}
+  ActivityBloc(this.activityUseCase) : super(ActivityInitials()) {
+    on<ActivityGet>(_onActivityGetByType);
+  }
 
-  Future<void> _onActivityTypeGet(
-    ActivityTypeGet event,
+  Future<void> _onActivityGetByType(
+    ActivityGet event,
     Emitter<ActivityState> emit,
   ) async {
-    // Show loading spinner
     emit(ActivityLoading());
 
-    try {
-      // Fetch activities from the use case
-      final activities = await activityTypeUseCase.execute();
+    log("Activity Type Received: ${event.activityType}");
 
-      // Debug print to verify what we got from backend
+    try {
+      final activities = await activityUseCase.execute(event.activityType);
+
       log("Fetched Activities: $activities");
 
       // Emit success state with the fetched activities
       emit(ActivitySuccess(
         activities
-            .map((activity) => TypeActivity(
-                  idTypeActivity: activity.idTypeActivity,
-                  nameTypeActivity: activity.nameTypeActivity,
+            .map((activity) => Activity(
+                  idActivity: activity.idActivity,
+                  nameActivity: activity.nameActivity,
+                  descriptionActivity: activity.descriptionActivity,
+                  typeActivity: activity.typeActivity,
                   imageActivity: activity.imageActivity,
+                  popularity: activity.popularity,
                 ))
             .toList(),
       ));
     } catch (e, stackTrace) {
-      // Log the error for debugging
       log("Error fetching activities", error: e, stackTrace: stackTrace);
-
-      // Emit failure state with error message
       emit(ActivityFailure(e.toString()));
     }
   }
-
-  Future <void> _onActivityPopulaireGet  () async {
-      try {
-              
-            } catch (error) {
-              
-            }
-  }
-
-
-
-Future<void> _onActivityGetByType(
-  ActivityGet event,
-  Emitter<ActivityState> emit,
-) async {
-  emit(ActivityLoading());
-
-  try {
-
-    final activities = await activityUseCase.execute(event.activityType);
-
-    log("Fetched Activities: $activities");
-
-    // Emit success state with the fetched activities
-    emit(ActivitySuccess(
-      activities
-          .map((activity) => Activity(
-                idActivity: activity.idActivity,
-                nameActivity: activity.nameActivity,
-                descriptionActivity: activity.descriptionActivity,
-                typeActivity: activity.typeActivity,
-                imageActivity: activity.imageActivity,
-                popularity: activity.popularity,
-              ))
-          .toList(),
-    ));
-  } catch (e, stackTrace) {
-    log("Error fetching activities", error: e, stackTrace: stackTrace);
-    emit(ActivityFailure(e.toString()));
-  }
 }
-
-
-
-
-}
-
-//   Future<void> _onSignUpSubmitted(
-//     SignUpSubmitted event,
-//     Emitter<SignUpState> emit,
-//   ) async {
-//     emit(SignUpLoading()); // Show loading state
-//
-//     try {
-//       // Create a User entity
-//       final user = User(
-//         email: event.email,
-//         firstName: event.firstName,
-//         lastName: event.lastName,
-//         address: event.address,
-//         phone: event.phone,
-//         password: event.password,
-//       );
-//
-//       // Call the use case
-//       await registerUseCase.execute(user);
-//
-//       // If successful, emit SignUpSuccess
-//       emit(SignUpSuccess());
-//     } catch (e) {
-//       // If an error occurs, emit SignUpFailure
-//       emit(SignUpFailure(e.toString()));
-//     }
-//   }
-// }
-//
-
-// class LoginBloc extends Bloc<LoginEvent, LoginState> {
-//   final LoginUseCase loginUseCase; LoginBloc(this.loginUseCase) : super(LoginInitials()) {
-//     on<LoginSubmitted>(_onLoginSubmitted);
-//   }
-//
-//   Future<void> _onLoginSubmitted(
-//     LoginSubmitted event,
-//     Emitter<LoginState> emit,
-//   ) async {
-//     emit(LoginLoading()); // Show loading state
-//
-//     try {
-//       // Create a User entity
-//       final user = LoginUser(
-//         email: event.email,
-//         password: event.password,
-//       );
-//       // Call the use case
-//       print("message:$user");
-//       await loginUseCase.execute(user);
-//
-//       // If successful, emit LoginSuccess
-//       emit(LoginSuccess());
-//     } catch (e) {
-//       // If an error occurs, emit LoginFailure
-//       emit(LoginFailure(e.toString()));
-//     }
-//   }

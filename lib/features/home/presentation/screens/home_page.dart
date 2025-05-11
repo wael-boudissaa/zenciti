@@ -4,6 +4,7 @@ import 'package:zenciti/app/config/theme.dart';
 import 'package:zenciti/features/home/data/models/models.dart';
 import 'package:zenciti/features/home/data/repositories/activite_type_repo.dart';
 import 'package:zenciti/features/home/presentation/blocs/activity_bloc.dart';
+import 'package:zenciti/features/home/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/home/presentation/blocs/activity_event.dart';
 // import 'package:zenciti/features/home/presentation/blocs/activity_state.dart'; // You forgot to import the state file
 
@@ -21,7 +22,7 @@ class _Home_PageState extends State<Home_Page> {
   @override
   void initState() {
     super.initState();
-    context.read<ActivityBloc>().add(ActivityTypeGet());
+    context.read<ActivityTypeBloc>().add(ActivityTypeGet());
   }
 
   @override
@@ -37,6 +38,7 @@ class _Home_PageState extends State<Home_Page> {
                 return Future.value([
                   const ListTile(
                     title: Text("No suggestions yet"),
+
                   ),
                 ]);
               },
@@ -56,6 +58,7 @@ class _Home_PageState extends State<Home_Page> {
               },
             ),
             const SizedBox(height: 20),
+
             Text(
               'All Activities',
               style: const TextStyle(
@@ -65,9 +68,10 @@ class _Home_PageState extends State<Home_Page> {
               ),
             ),
             const SizedBox(height: 20),
+
             SizedBox(
               height: 100,
-              child: BlocBuilder<ActivityBloc, ActivityState>(
+              child: BlocBuilder<ActivityTypeBloc, ActivityState>(
                 builder: (context, state) {
                   if (state is ActivityLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -91,11 +95,6 @@ class _Home_PageState extends State<Home_Page> {
                             // Navigate to activity details
                             context.go('/home/type/${activity.idTypeActivity}',
                                 extra: activity);
-                            context.read<ActivityBloc>().add(
-                                  ActivityGet(
-                                    activity.idTypeActivity,
-                                  ),
-                                );
                           },
                           child: Padding(
                             padding:
@@ -141,7 +140,7 @@ class _Home_PageState extends State<Home_Page> {
             ),
             // const SizedBox(height: 20),
             Expanded(
-              child: BlocBuilder<ActivityBloc, ActivityState>(
+              child: BlocBuilder<ActivityTypeBloc, ActivityState>(
                 builder: (context, state) {
                   if (state is ActivityLoading) {
                     return const Center(child: CircularProgressIndicator());

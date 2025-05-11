@@ -9,6 +9,7 @@ import 'sign_up_event.dart';
 part 'sign_up_state.dart';
 
 part 'login_state.dart';
+
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final RegisterUseCase registerUseCase;
 
@@ -23,7 +24,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     emit(SignUpLoading()); // Show loading state
 
     try {
-      // Create a User entity
       final user = User(
         email: event.email,
         firstName: event.firstName,
@@ -44,7 +44,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 }
-
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUseCase loginUseCase;

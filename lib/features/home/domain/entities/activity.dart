@@ -9,14 +9,14 @@ class TypeActivity {
   });
   factory TypeActivity.fromJson(Map<String, dynamic> json) {
     return TypeActivity(
-      idTypeActivity: json['idTypeAcitvity'], // typo preserved as in Go
+      idTypeActivity: json['idTypeActivity'], // typo preserved as in Go
       nameTypeActivity: json['nameTypeActivity'],
       imageActivity: json['imageActivity'],
     );
   }
   Map<String, dynamic> toJson() {
     return {
-      'idTypeAcitvity': idTypeActivity,
+      'idTypeActivity': idTypeActivity,
       'nameTypeActivity': nameTypeActivity,
       'imageActivity': imageActivity,
     };
@@ -48,7 +48,7 @@ class Activity{
         idActivity: json['idActivity'],
         nameActivity: json['nameActivity'],
         descriptionActivity: json['descriptionActivity'],
-        typeActivity: json['typeActivity'],
+        typeActivity: json['idTypeActivity'],
         imageActivity: json['imageActivity'],
         popularity: json['popularity'],
         );

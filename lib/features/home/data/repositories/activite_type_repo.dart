@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:zenciti/core/utils/api_client.dart';
@@ -47,6 +48,8 @@ class ActiviteTypeRepoImp implements ActivityRepo {
       try{
           final response = await apiClient.get('/activite/type/$activityType');
           final List<dynamic> data = response['data'];
+
+          log('Response: $data');
           final activities = data.map((json) => Activity.fromJson(json)).toList();
           return activities;
 

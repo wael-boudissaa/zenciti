@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/core/utils/api_client.dart';
 import 'package:zenciti/features/home/data/repositories/activite_type_repo.dart';
 import 'package:zenciti/features/home/domain/usecase/ativity_type_use_case.dart' show ActivityTypeUseCase, ActivityUseCase;
-import 'package:zenciti/features/home/presentation/blocs/activity_bloc.dart';
+import 'package:zenciti/features/home/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/home/presentation/screens/home_page.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 import 'package:zenciti/features/home/presentation/widgets/navigation_bar.dart';
@@ -21,8 +21,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
-      BlocProvider<ActivityBloc>(
-        create: (context) => ActivityBloc(
+      BlocProvider<ActivityTypeBloc>(
+        create: (context) => ActivityTypeBloc(
           ActivityTypeUseCase(
             ActiviteTypeRepoImp(
               apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
