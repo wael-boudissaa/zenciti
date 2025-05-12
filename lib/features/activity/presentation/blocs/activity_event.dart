@@ -13,4 +13,11 @@ class ActivityGet extends ActivityEvent {
   ActivityGet(this.activityType);
 }
 
+class ActivityPopulaireGet extends ActivityEvent {}
+class GetActivityById extends ActivityEvent {
+  final String idActivity;
+
+  GetActivityById(this.idActivity);
+}
+
 class ActivityTypeGet extends ActivityEvent {}

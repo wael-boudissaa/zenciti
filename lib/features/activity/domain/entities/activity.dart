@@ -67,4 +67,5 @@ class Activity{
     String toString() {
         return 'Activity{idActivity: $idActivity, nameActivity: $nameActivity, descriptionActivity: $descriptionActivity, typeActivity: $typeActivity, imageActivity: $imageActivity, popularity: $popularity}';
     }
+
 }

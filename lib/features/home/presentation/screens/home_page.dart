@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zenciti/app/config/theme.dart';
-import 'package:zenciti/features/home/data/models/models.dart';
-import 'package:zenciti/features/home/data/repositories/activite_type_repo.dart';
-import 'package:zenciti/features/home/presentation/blocs/activity_bloc.dart';
-import 'package:zenciti/features/home/presentation/blocs/activity_type_bloc.dart';
-import 'package:zenciti/features/home/presentation/blocs/activity_event.dart';
 // import 'package:zenciti/features/home/presentation/blocs/activity_state.dart'; // You forgot to import the state file
 
 import 'package:go_router/go_router.dart';
+import 'package:zenciti/app/config/theme.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_populaire_dart.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 
 class Home_Page extends StatefulWidget {
@@ -23,6 +21,7 @@ class _Home_PageState extends State<Home_Page> {
   void initState() {
     super.initState();
     context.read<ActivityTypeBloc>().add(ActivityTypeGet());
+    context.read<ActivityPopulaireBloc>().add(ActivityPopulaireGet());
   }
 
   @override
@@ -38,7 +37,6 @@ class _Home_PageState extends State<Home_Page> {
                 return Future.value([
                   const ListTile(
                     title: Text("No suggestions yet"),
-
                   ),
                 ]);
               },
@@ -140,7 +138,7 @@ class _Home_PageState extends State<Home_Page> {
             ),
             // const SizedBox(height: 20),
             Expanded(
-              child: BlocBuilder<ActivityTypeBloc, ActivityState>(
+              child: BlocBuilder<ActivityPopulaireBloc, ActivityState>(
                 builder: (context, state) {
                   if (state is ActivityLoading) {
                     return const Center(child: CircularProgressIndicator());
@@ -163,17 +161,20 @@ class _Home_PageState extends State<Home_Page> {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: List.generate(4, (i) {
-                              return Padding(
+                            children: [
+                              Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Image.network(
-                                  'https://picsum.photos/200',
+                                  activity.imageActivity
+                                          ?.trim()
+                                          .replaceAll('\n', '') ??
+                                      'https://via.placeholder.com/150',
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   height: 180,
                                 ),
-                              );
-                            }),
+                              ),
+                            ],
                           ),
                         );
                       },

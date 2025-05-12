@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zenciti/features/home/domain/entities/activity.dart';
-import 'package:zenciti/features/home/domain/usecase/ativity_use_case.dart';
-import 'package:zenciti/features/home/presentation/blocs/activity_event.dart';
-import 'package:zenciti/features/home/presentation/blocs/activity_type_bloc.dart';
+import 'package:zenciti/features/activity/domain/entities/activity.dart';
+import 'package:zenciti/features/activity/domain/usecase/ativity_use_case.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
 
 class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
   final ActivityUseCase activityUseCase;

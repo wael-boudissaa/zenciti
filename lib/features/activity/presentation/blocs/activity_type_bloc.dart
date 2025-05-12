@@ -1,21 +1,19 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:zenciti/features/home/domain/entities/activity.dart';
-import 'package:zenciti/features/home/domain/usecase/ativity_type_use_case.dart';
+import 'package:zenciti/features/activity/domain/entities/activity.dart';
+import 'package:zenciti/features/activity/domain/usecase/ativity_type_use_case.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart';
 // import 'package:zenciti/features/home/domain/usecase/ativity_use_case.dart';
 
-import 'package:zenciti/features/home/presentation/blocs/activity_event.dart';
 
 part 'activity_state.dart';
 
 class ActivityTypeBloc extends Bloc<ActivityEvent, ActivityState> {
   final ActivityTypeUseCase activityTypeUseCase;
-  // final ActivityUseCase activityUseCase;
 
   // Define initial state
-  ActivityTypeBloc(this.activityTypeUseCase )
-      : super(ActivityInitials()) {
+  ActivityTypeBloc(this.activityTypeUseCase) : super(ActivityInitials()) {
     on<ActivityTypeGet>(_onActivityTypeGet);
   }
 
@@ -52,9 +50,4 @@ class ActivityTypeBloc extends Bloc<ActivityEvent, ActivityState> {
     }
   }
 
-  Future<void> _onActivityPopulaireGet() async {
-      try {} catch (error) {}
-  }
-
 }
-

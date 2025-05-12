@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/core/utils/api_client.dart';
-import 'package:zenciti/features/home/data/repositories/activite_type_repo.dart';
-import 'package:zenciti/features/home/domain/usecase/ativity_type_use_case.dart' show ActivityTypeUseCase, ActivityUseCase;
-import 'package:zenciti/features/home/presentation/blocs/activity_type_bloc.dart';
+import 'package:zenciti/features/activity/data/repositories/activite_type_repo.dart';
+import 'package:zenciti/features/activity/domain/usecase/activity_popularity.dart';
+import 'package:zenciti/features/activity/domain/usecase/ativity_type_use_case.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_populaire_dart.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/home/presentation/screens/home_page.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 import 'package:zenciti/features/home/presentation/widgets/navigation_bar.dart';
@@ -20,16 +22,28 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
-      BlocProvider<ActivityTypeBloc>(
-        create: (context) => ActivityTypeBloc(
-          ActivityTypeUseCase(
-            ActiviteTypeRepoImp(
-              apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
+    final List<Widget> pages = [
+      MultiBlocProvider(
+        providers: [
+          BlocProvider<ActivityTypeBloc>(
+            create: (context) => ActivityTypeBloc(
+               ActivityTypeUseCase(
+                ActiviteTypeRepoImp(
+                     apiClient:ApiClient(baseUrl: "http://192.168.1.191:8080"), 
+                    ),
+              ),
             ),
           ),
-        ),
-        child: Home_Page(), // your real home screen
+          BlocProvider<ActivityPopulaireBloc>(
+            create: (context) => ActivityPopulaireBloc(
+             ActivityPopularityUseCase(
+                ActiviteTypeRepoImp(
+                    apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080")),
+              ),
+            ),
+          ),
+        ],
+        child: Home_Page(),
       ),
       const Center(child: Text('Browse')),
       const Center(child: Text('Radio')),
@@ -39,7 +53,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBarHome(),
-      body: _pages[_currentIndex],
+      body: pages[_currentIndex],
       bottomNavigationBar: NavigationBarW(
         index: _currentIndex,
         onChange: (index) {

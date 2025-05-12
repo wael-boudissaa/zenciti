@@ -7,7 +7,6 @@ import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
 import 'package:zenciti/features/auth/domain/usecase/register_use_case.dart';
 import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:zenciti/features/auth/presentation/blocs/login_event.dart';
-import 'package:zenciti/features/auth/presentation/screens/home_screen.dart';
 import 'package:zenciti/features/auth/presentation/screens/sign_up.dart';
 import 'package:zenciti/features/auth/presentation/screens/sign_up_presentation.dart';
 import 'package:zenciti/features/auth/presentation/widgets/auth_field.dart';
@@ -17,6 +16,7 @@ import 'package:zenciti/features/auth/presentation/widgets/google_sign_in_button
 
 import 'package:forui/forui.dart';
 import 'package:zenciti/features/home/presentation/screens/home_page.dart';
+import 'package:zenciti/features/home/presentation/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is LoginSuccess) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => HomeScreen()),
+              MaterialPageRoute(builder: (context) => HomePage()),
             );
           } else if (state is LoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
