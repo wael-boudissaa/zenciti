@@ -9,6 +9,9 @@ import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.
 import 'package:zenciti/features/home/presentation/screens/home_page.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 import 'package:zenciti/features/home/presentation/widgets/navigation_bar.dart';
+import 'package:zenciti/features/restaurant/data/repositories/restaurant_repo.dart';
+import 'package:zenciti/features/restaurant/domain/usecase/restaurant_use_case.dart';
+import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,17 +30,17 @@ class _HomePageState extends State<HomePage> {
         providers: [
           BlocProvider<ActivityTypeBloc>(
             create: (context) => ActivityTypeBloc(
-               ActivityTypeUseCase(
+              ActivityTypeUseCase(
                 ActiviteTypeRepoImp(
-                     apiClient:ApiClient(baseUrl: "http://192.168.1.191:8080"), 
-                    ),
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
+                ),
               ),
             ),
           ),
-          BlocProvider<ActivityPopulaireBloc>(
-            create: (context) => ActivityPopulaireBloc(
-             ActivityPopularityUseCase(
-                ActiviteTypeRepoImp(
+          BlocProvider<RestaurantBloc>(
+            create: (context) => RestaurantBloc(
+              RestaurantUseCase(
+                RestaurantRepoImpl(
                     apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080")),
               ),
             ),

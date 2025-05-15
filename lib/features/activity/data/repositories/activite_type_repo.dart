@@ -75,7 +75,7 @@ class ActiviteTypeRepoImp implements ActivityRepo {
   Future<Activity> getActivityById(String activityId) async {
 
     try {
-      final response = await apiClient.get('/activite/signle/$activityId');
+      final response = await apiClient.get('/activite/single/$activityId');
       final data = response['data'];
 
       log('Response: $data');

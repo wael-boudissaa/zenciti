@@ -5,9 +5,7 @@ final storage = FlutterSecureStorage();
 
 // Save Tokens
 Future<void> saveTokens(String accessToken) async {
-  print("Saving Token: $accessToken"); // Debug print
   await storage.write(key: 'access_token', value: accessToken);
-  print("Token saved successfully!");
 }
 
 // Get Access Token

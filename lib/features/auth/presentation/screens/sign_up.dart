@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zenciti/app/config/theme.dart';
 import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
 import 'package:zenciti/features/auth/domain/usecase/login_use_case.dart';
@@ -145,13 +146,10 @@ class _SignUpState extends State<SignUp> {
                                         address: textAddress.text,
                                         password: textPassword.text,
                                         phone: textPhone.text,
+
                                       ),
                                     );
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => HomePage()),
-                                );
+                                context.go('/');
                               },
                               textstring: "S'inscrire",
                             ),

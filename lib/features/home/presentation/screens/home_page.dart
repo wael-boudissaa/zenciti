@@ -8,6 +8,10 @@ import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart
 import 'package:zenciti/features/activity/presentation/blocs/activity_populaire_dart.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
+import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
+import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_bloc.dart';
+import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.dart';
+import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_bloc.dart';
 
 class Home_Page extends StatefulWidget {
   const Home_Page({super.key});
@@ -21,7 +25,8 @@ class _Home_PageState extends State<Home_Page> {
   void initState() {
     super.initState();
     context.read<ActivityTypeBloc>().add(ActivityTypeGet());
-    context.read<ActivityPopulaireBloc>().add(ActivityPopulaireGet());
+    // context.read<ActivityPopulaireBloc>().add(ActivityPopulaireGet());
+    context.read<RestaurantBloc>().add(RestaurantGetAll());
   }
 
   @override
@@ -58,7 +63,7 @@ class _Home_PageState extends State<Home_Page> {
             const SizedBox(height: 20),
 
             Text(
-              'All Activities',
+              'All Type of Activities',
               style: const TextStyle(
                 color: AppColors.greenPrimary,
                 fontSize: 20,
@@ -91,7 +96,7 @@ class _Home_PageState extends State<Home_Page> {
                         return GestureDetector(
                           onTap: () {
                             // Navigate to activity details
-                            context.go('/home/type/${activity.idTypeActivity}',
+                            context.push('/home/type/${activity.idTypeActivity}',
                                 extra: activity);
                           },
                           child: Padding(
@@ -127,54 +132,61 @@ class _Home_PageState extends State<Home_Page> {
                 },
               ),
             ),
-            // const SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
-              'Populaire Activities',
+              'Zenciti Resturants',
               style: const TextStyle(
                 color: AppColors.greenPrimary,
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            // const SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
-              child: BlocBuilder<ActivityPopulaireBloc, ActivityState>(
+              child: BlocBuilder<RestaurantBloc, RestaurantState>(
                 builder: (context, state) {
-                  if (state is ActivityLoading) {
+                  if (state is RestaurantLoading) {
                     return const Center(child: CircularProgressIndicator());
-                  } else if (state is ActivityFailure) {
+                  } else if (state is RestaurantFailure) {
                     return const Center(
                         child: Text('Error loading activities.'));
-                  } else if (state is ActivitySuccess) {
-                    final activities = state.activities;
+                  } else if (state is RestaurantSuccess) {
+                    final restaurants = state.restaurant;
 
-                    if (activities.isEmpty) {
+                    if (restaurants.isEmpty) {
                       return const Center(child: Text('No activities found.'));
                     }
 
                     return ListView.builder(
                       scrollDirection: Axis.vertical,
-                      itemCount: activities.length,
+                      itemCount: restaurants.length,
                       itemBuilder: (context, index) {
-                        final activity = activities[index];
+                        final restaurant = restaurants[index] as Restaurant;
                         return Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Image.network(
-                                  activity.imageActivity
-                                          ?.trim()
-                                          .replaceAll('\n', '') ??
-                                      'https://via.placeholder.com/150',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 180,
+                          child: InkWell(
+                            onTap: () {
+                              // Navigate to activity details
+                              context.push('/home/restaurant/s/${restaurant.idRestaurant}',
+                                  extra: restaurant.idRestaurant);
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Image.network(
+                                    restaurant.image
+                                            ?.trim()
+                                            .replaceAll('\n', '') ??
+                                        'https://via.placeholder.com/150',
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: 180,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         );
                       },

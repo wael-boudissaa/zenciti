@@ -1,5 +1,7 @@
 // data/repositories/auth_repository_impl.dart
 // import 'package:zenciti/core/utils/token.dart';
+import 'dart:convert';
+
 import 'package:zenciti/core/utils/api_client.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
 import 'package:zenciti/features/auth/domain/repositories/auth_repo.dart';
@@ -8,6 +10,7 @@ import '../../../../core/utils/token.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final storage = FlutterSecureStorage();
+
 class AuthRepositoryImpl implements AuthRepo {
   final ApiClient apiClient;
 
@@ -20,40 +23,40 @@ class AuthRepositoryImpl implements AuthRepo {
       '/signup',
       {
         'email': user.email,
-        'firstName': user.firstName,
-        'lastName': user.lastName,
+        'first_name': user.firstName,
+        'last_name': user.lastName,
         'address': user.address,
-        'phone': user.phone,
+        'phone_number': user.phone,
         'password': user.password,
+        'gender': "male",
+        'type': "client"
       },
     );
 
-    if (response['status'] != 'success') {
-      throw Exception('Failed to register user');
-    }
-    else { 
-
-        String refreshToken = response['token'];
-        await saveTokens(refreshToken);
-
+    if (response['message'] != 'success') {
+      // throw Exception('Failed to register user');
+      print('succes');
+    } else {
+      String refreshToken = response['token'];
+      await saveTokens(refreshToken);
     }
   }
-
 
   @override
   Future<void> login(LoginUser user) async {
-  
-      final Map response = await apiClient.post('/login', {
-        'email': user.email,
-        'password': user.password,
-      });
-      if (response.containsKey('error')) {
-        throw Exception(response['error']);
-      } else {
-        String refreshToken = response['token'];
-        await saveTokens(refreshToken);
-      }
-  }
+    final response = await apiClient.post('/login', {
+      'email': user.email,
+      'password': user.password,
+    });
 
+   if (response['message'] == 200) {
+    final token = response['data']['token']; 
 
+    await saveTokens(token);
+
+    // Save token or do something with it
+    return;
+  } else {
+    throw Exception('Failed to login: ${response['message']}');
+  }}
 }

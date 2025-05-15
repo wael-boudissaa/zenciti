@@ -36,10 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
+            context.go('/home');
           } else if (state is LoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error)),
@@ -127,12 +124,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         label: const Text('Email Address'),
                         hint: 'example@gmail.com',
                         maxLines: 1,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          return null;
+                        },
                       ),
                       const SizedBox(height: 22),
-                      // AuthField(
-                      //   textlabel: 'Password',
-                      //   controller: _passwordController,
-                      // ),
+                      FTextField(
+                        controller: _passwordController,
+                        label: const Text('Password'),
+                        hint: '********',
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -140,28 +150,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           ButtonBlack(
                             textstring: 'Se Connecter',
                             onPressed: () {
-                              // if (_formKey.currentState!.validate()) {
-                              //   context.read<LoginBloc>().add(
-                              //         LoginSubmitted(
-                              //           email: _emailController.text.trim(),
-                              //           password:
-                              //               _passwordController.text.trim(),
-                              //         ),
-                              //       );
-                              // }
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) => Home_Page(),
-                              //     ));
-                                context.go('/home');
+                              if (_formKey.currentState!.validate()) {
+                                print('Attempting login...');
+                                context.read<LoginBloc>().add(
+                                      LoginSubmitted(
+                                        email: _emailController.text.trim(),
+                                        password:
+                                            _passwordController.text.trim(),
+                                      ),
+                                    );
+                              }
                             },
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
                       DividerOr(),
-
                       const SizedBox(height: 25),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,

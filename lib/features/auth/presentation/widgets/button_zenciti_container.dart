@@ -4,7 +4,7 @@ import 'package:zenciti/app/config/theme.dart';
 
 class ButtonZencitiContainer extends StatefulWidget {
   final String textButton;
-    final  void Function() onPressed;
+  final void Function() onPressed;
   const ButtonZencitiContainer(
       {super.key, required this.textButton, required this.onPressed});
 
@@ -16,7 +16,7 @@ class _ButtonZencitiContainerState extends State<ButtonZencitiContainer> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: widget.onPressed, // This will trigger the onPressed callback
+      onTap: widget.onPressed, // This will trigger the onPressed callback
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.greenPrimary,

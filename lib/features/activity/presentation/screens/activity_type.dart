@@ -66,7 +66,7 @@ class _ActivityTypeState extends State<ActivityType> {
                             horizontal: 16.0, vertical: 8.0),
                         child: InkWell(
                           onTap: () {
-                            context.go("/activities/${activity.idActivity}");
+                            context.push("/activities/${activity.idActivity}");
                           },
                           child: Container(
                             decoration: BoxDecoration(
