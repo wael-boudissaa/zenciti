@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:zenciti/features/auth/presentation/widgets/button_zenciti_container.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_use_case.dart';
@@ -55,6 +57,12 @@ class RestaurantDetails extends StatelessWidget {
                     _infoTile("Capacity", r.capacity.toString()),
                     _infoTile("Admin ID", r.idAdmineRestaurant),
                     _infoTile("Restaurant ID", r.idRestaurant),
+                    ButtonZencitiContainer(
+                        textButton: "Reservation",
+                      onPressed: () {
+                          context.push('/reservation');
+                      },
+                    ),
                   ],
                 ),
               );
