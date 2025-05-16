@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:zenciti/core/utils/api_client.dart';
+import 'package:zenciti/features/restaurant/domain/entities/menu.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
 
@@ -59,7 +60,7 @@ class RestaurantRepoImpl implements RestaurantRepo {
   }
 
   @override
-  Future<Restaurant> getRestaurantById(String id)async {
+  Future<Restaurant> getRestaurantById(String id) async {
     try {
       final response = await apiClient.get('/restaurant/$id');
       final restaurant = Restaurant.fromJson(response['data']);
@@ -67,6 +68,23 @@ class RestaurantRepoImpl implements RestaurantRepo {
     } catch (e) {
       print('Error fetching restaurant by id: $e');
       throw Exception('Failed to load restaurant by id');
+    }
+  }
+
+  @override
+  Future<List<MenuItem>> getMenuActife(String idRestaurant) async {
+    try {
+      final fullUrl = '/menu/actif/$idRestaurant';
+      print('GET → $fullUrl');
+      final response = await apiClient.get(fullUrl);
+      log('Raw response from /restaurant/menu/$idRestaurant → $response');
+      final List<dynamic> data = response['data'];
+      log('Response: $data');
+      final menuItems = data.map((json) => MenuItem.fromJson(json)).toList();
+      return menuItems;
+    } catch (e) {
+      print('Error fetching active menu: $e');
+      throw Exception('Failed to load active menu');
     }
   }
 }

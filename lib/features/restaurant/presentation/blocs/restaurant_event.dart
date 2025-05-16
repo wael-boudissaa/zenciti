@@ -17,9 +17,17 @@ class RestaurantTableGetAll extends RestaurantEvent {
 class RestaurantGetAll extends RestaurantEvent {
   const RestaurantGetAll();
 }
+
 class RestaurantGetById extends RestaurantEvent {
   final String id;
   const RestaurantGetById({
     required this.id,
+  });
+}
+
+class MenuGetFood extends RestaurantEvent {
+  final String idRestaurant;
+  const MenuGetFood({
+    required this.idRestaurant,
   });
 }

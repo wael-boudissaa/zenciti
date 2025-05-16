@@ -9,6 +9,7 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
 
   RestaurantBloc(this.restaurantUseCase) : super(RestaurantInitials()) {
     on<RestaurantGetAll>(_onRestaurantGetAll);
+    on<MenuGetFood>(_onMenuGetFood);
     on<RestaurantGetById>(_onRestaurantGetById);
   }
 
@@ -24,7 +25,7 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
       emit(RestaurantFailure(e.toString()));
     }
   }
-  
+
   Future<void> _onRestaurantGetById(
       RestaurantGetById event, Emitter<RestaurantState> emit) async {
     emit(RestaurantLoading());
@@ -35,6 +36,15 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
       emit(RestaurantFailure(e.toString()));
     }
   }
+
+  Future<void> _onMenuGetFood(
+      MenuGetFood event, Emitter<RestaurantState> emit) async {
+    emit(RestaurantLoading());
+    try {
+      final menu = await restaurantUseCase.getMenuActife(event.idRestaurant);
+      emit(MenuSuccess(menu));
+    } catch (e) {
+      emit(RestaurantFailure(e.toString()));
+    }
+  }
 }
-
-

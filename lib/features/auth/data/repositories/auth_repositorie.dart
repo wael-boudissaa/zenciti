@@ -33,7 +33,7 @@ class AuthRepositoryImpl implements AuthRepo {
       },
     );
 
-    if (response['message'] != 'success') {
+    if (response['status'] != 'success') {
       // throw Exception('Failed to register user');
       print('succes');
     } else {
@@ -49,7 +49,7 @@ class AuthRepositoryImpl implements AuthRepo {
       'password': user.password,
     });
 
-   if (response['message'] == 200) {
+   if (response['status'] == 200) {
     final token = response['data']['token']; 
 
     await saveTokens(token);
@@ -57,6 +57,6 @@ class AuthRepositoryImpl implements AuthRepo {
     // Save token or do something with it
     return;
   } else {
-    throw Exception('Failed to login: ${response['message']}');
+    throw Exception('Failed to login: ${response['data']}');
   }}
 }

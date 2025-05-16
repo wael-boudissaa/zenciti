@@ -1,4 +1,3 @@
-
 part of 'restaurant_table_bloc.dart';
 
 abstract class RestaurantState<T> {}
@@ -12,6 +11,7 @@ class RestaurantSuccess<T> extends RestaurantState<T> {
 
   RestaurantSuccess(this.restaurant);
 }
+
 class RestaurantSingleSuccess<T> extends RestaurantState<T> {
   final Restaurant restaurant;
 
@@ -22,4 +22,10 @@ class RestaurantFailure<T> extends RestaurantState<T> {
   final String error;
 
   RestaurantFailure(this.error);
+}
+
+class MenuSuccess<T> extends RestaurantState<T> {
+  final List<T> menu;
+
+  MenuSuccess(this.menu);
 }
