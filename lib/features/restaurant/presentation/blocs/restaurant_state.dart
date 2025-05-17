@@ -25,7 +25,13 @@ class RestaurantFailure<T> extends RestaurantState<T> {
 }
 
 class MenuSuccess<T> extends RestaurantState<T> {
-  final List<T> menu;
+  final List<MenuItem> menu;
 
   MenuSuccess(this.menu);
+}
+
+class OrderSuccess<T> extends RestaurantState<T> {
+  final String message;
+
+  OrderSuccess(this.message);
 }

@@ -60,7 +60,7 @@ class RestaurantDetails extends StatelessWidget {
                     ButtonZencitiContainer(
                         textButton: "Reservation",
                       onPressed: () {
-                          context.push('/reservation');
+                          context.push('/order',extra: r.idRestaurant);
                       },
                     ),
                     ButtonZencitiContainer(

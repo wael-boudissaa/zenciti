@@ -11,6 +11,7 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
     on<RestaurantGetAll>(_onRestaurantGetAll);
     on<MenuGetFood>(_onMenuGetFood);
     on<RestaurantGetById>(_onRestaurantGetById);
+    on<OrderFood>(_onOrderFood);
   }
 
   Future<void> _onRestaurantGetAll(
@@ -43,6 +44,17 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
     try {
       final menu = await restaurantUseCase.getMenuActife(event.idRestaurant);
       emit(MenuSuccess(menu));
+    } catch (e) {
+      emit(RestaurantFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onOrderFood(
+      OrderFood event, Emitter<RestaurantState> emit) async {
+    emit(RestaurantLoading());
+    try {
+      await restaurantUseCase.OrderFood(event.idOrder, event.food);
+      emit(OrderSuccess("Order placed successfully"));
     } catch (e) {
       emit(RestaurantFailure(e.toString()));
     }

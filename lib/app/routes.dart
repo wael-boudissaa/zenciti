@@ -22,6 +22,7 @@ import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_bloc.d
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_bloc.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/menu.dart';
+import 'package:zenciti/features/restaurant/presentation/screens/order.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/reservation.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurant_details.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurants.dart';
@@ -38,6 +39,18 @@ class AppRouter {
         path: '/home',
         builder: (context, state) => HomePage(),
       ),
+      GoRoute(
+          path: '/order',
+          builder: (context, state) {
+            return BlocProvider(
+              create: (context) => RestaurantBloc(
+                RestaurantUseCase(
+                  RestaurantRepoImpl(apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080")),
+                ),
+              )..add(MenuGetFood(idRestaurant: state.extra as String)),
+              child: FoodOrderPage(),
+            );
+          }),
       GoRoute(
           path: '/restaurant',
           builder: (context, state) {

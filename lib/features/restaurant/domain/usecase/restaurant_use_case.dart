@@ -20,4 +20,8 @@ class RestaurantUseCase {
   Future<List<MenuItem>> getMenuActife(String idRestaurant) async {
     return await _repository.getMenuActife(idRestaurant);
   }
+
+  Future<void> OrderFood(String idOrder, List<FoodItem> food)async {
+    _repository.OrderFood(idOrder, food);
+  }
 }

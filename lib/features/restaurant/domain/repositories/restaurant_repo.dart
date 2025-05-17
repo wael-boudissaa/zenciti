@@ -1,4 +1,3 @@
-
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 
 import '../entities/menu.dart';
@@ -9,8 +8,9 @@ abstract class RestaurantRepo {
   // Future<void> deleteActivity(String activityId);
   Future<List<RestaurantTable>> getTableRestaurant(String idRestaurant);
   Future<List<Restaurant>> getAllRestaurant();
-    Future<Restaurant> getRestaurantById(String id);
-    Future<List<MenuItem>> getMenuActife(String idRestaurant);
+  Future<Restaurant> getRestaurantById(String id);
+  Future<List<MenuItem>> getMenuActife(String idRestaurant);
+  void OrderFood(String idOrder, List<FoodItem> food);
   // Future<List<Activity>> getActivitiesByType(String activityType);
   // Future<List<Activity>> getActivitiesByPopularity();
   // Future<Activity> getActivityById(String activityId);

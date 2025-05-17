@@ -87,4 +87,23 @@ class RestaurantRepoImpl implements RestaurantRepo {
       throw Exception('Failed to load active menu');
     }
   }
+
+  @override
+  void OrderFood(String idOrder, List<FoodItem> food) async {
+    try {
+      final fullUrl = '/order/place';
+      print('POST → $fullUrl');
+      final body = {
+        'idOrder': idOrder,
+        'food': food.map((item) => item.toJson()).toList(),
+      };
+      final response = await apiClient.post(fullUrl, body);
+      log('Raw response from /order/place → $response');
+      final data = response['data'];
+      log('Response: $data');
+    } catch (e) {
+      print('Error placing order: $e');
+      throw Exception('Failed to place order');
+    }
+  }
 }
