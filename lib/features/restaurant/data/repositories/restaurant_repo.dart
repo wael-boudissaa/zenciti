@@ -28,13 +28,24 @@ class RestaurantRepoImpl implements RestaurantRepo {
   });
 
   @override
-  Future<List<RestaurantTable>> getTableRestaurant(String idRestaurant) async {
+  Future<List<RestaurantTable>> getTableRestaurant(
+      String idRestaurant, DateTime timeSlot) async {
     try {
-      final response = await apiClient.get('/restaurant/tables/$idRestaurant');
-      log('Raw response from /restaurant/tables/$idRestaurant → $response');
-      final List<dynamic> data = response['data'];
+      final body = {
+        "idRestaurant": idRestaurant,
+        "timeSlot": timeSlot.toIso8601String(),
+      };
 
-      log('Response: $data');
+      final response = await apiClient.post(
+        '/restaurant/tables',
+        body,
+      );
+
+      log('Raw response from /restaurant/tables → $response');
+
+      final List<dynamic> data = response['data'];
+      log('Response data: $data');
+
       final restaurantTables =
           data.map((json) => RestaurantTable.fromJson(json)).toList();
       return restaurantTables;
@@ -89,12 +100,12 @@ class RestaurantRepoImpl implements RestaurantRepo {
   }
 
   @override
-  void OrderFood(String idOrder, List<FoodItem> food) async {
+  void OrderFood(String idReservation, List<FoodItem> food) async {
     try {
       final fullUrl = '/order/place';
       print('POST → $fullUrl');
       final body = {
-        'idOrder': idOrder,
+        'idReservation': idReservation,
         'food': food.map((item) => item.toJson()).toList(),
       };
       final response = await apiClient.post(fullUrl, body);
@@ -104,6 +115,36 @@ class RestaurantRepoImpl implements RestaurantRepo {
     } catch (e) {
       print('Error placing order: $e');
       throw Exception('Failed to place order');
+    }
+  }
+
+  @override
+  Future<String> createReservation(
+      String idClient,
+      String idRestaurant,
+      String idTable,
+      DateTime timeFrom,
+      DateTime timeTo,
+      int numberOfPeople) async {
+    try {
+      final fullUrl = '/reservation';
+      print('POST → $fullUrl');
+      final body = {
+        'idClient': idClient,
+        'idRestaurant': idRestaurant,
+        'idTable': idTable,
+        'timeFrom': timeFrom.toIso8601String(),
+        'timeTo': timeTo.toIso8601String(),
+        'numberOfPeople': numberOfPeople,
+      };
+      final response = await apiClient.post(fullUrl, body);
+      log('Raw response from /reservation/create → $response');
+      final data = response['data'];
+      log('Response: $data');
+      return data;
+    } catch (e) {
+      print('Error creating reservation: $e');
+      throw Exception('Failed to create reservation');
     }
   }
 }

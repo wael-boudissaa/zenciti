@@ -8,15 +8,34 @@ abstract class RestaurantEvent extends Equatable {
   List<Object> get props => [];
 }
 
+// restaurant_event.dart
 class RestaurantTableGetAll extends RestaurantEvent {
   final String idRestaurant;
-  const RestaurantTableGetAll({
-    required this.idRestaurant,
-  });
+  final DateTime timeSlot;
+
+  RestaurantTableGetAll({required this.idRestaurant, required this.timeSlot});
 }
 
 class RestaurantGetAll extends RestaurantEvent {
   const RestaurantGetAll();
+}
+
+class CreateReservation extends RestaurantEvent {
+    final String idClient;
+  final String idRestaurant;
+  final String idTable;
+  final DateTime timeFrom;
+  final DateTime timeTo;
+  final int numberOfPeople;
+
+  const CreateReservation({
+    required this.idClient,
+    required this.idRestaurant,
+    required this.idTable,
+    required this.timeFrom,
+    required this.timeTo,
+    required this.numberOfPeople,
+  });
 }
 
 class RestaurantGetById extends RestaurantEvent {
@@ -34,10 +53,10 @@ class MenuGetFood extends RestaurantEvent {
 }
 
 class OrderFood extends RestaurantEvent {
-  final String idOrder;
+  final String idReservation;
   final List<FoodItem> food;
   const OrderFood({
-    required this.idOrder,
+    required this.idReservation,
     required this.food,
   });
 }

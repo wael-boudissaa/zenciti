@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
             create: (context) => ActivityTypeBloc(
               ActivityTypeUseCase(
                 ActiviteTypeRepoImp(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
                 ),
               ),
             ),
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
             create: (context) => RestaurantBloc(
               RestaurantUseCase(
                 RestaurantRepoImpl(
-                    apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080")),
+                    apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080")),
               ),
             ),
           ),

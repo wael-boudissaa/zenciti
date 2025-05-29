@@ -21,7 +21,18 @@ class RestaurantUseCase {
     return await _repository.getMenuActife(idRestaurant);
   }
 
-  Future<void> OrderFood(String idOrder, List<FoodItem> food)async {
-    _repository.OrderFood(idOrder, food);
+  Future<void> OrderFood(String idReservation, List<FoodItem> food) async {
+    _repository.OrderFood(idReservation, food);
+  }
+
+  Future<String> createReservation(
+      String idClient,
+      String idRestaurant,
+      String idTable,
+      DateTime timeFrom,
+      DateTime timeTo,
+      int numberOfPeople) async {
+    return await _repository.createReservation(
+        idClient, idRestaurant, idTable, timeFrom, timeTo, numberOfPeople);
   }
 }

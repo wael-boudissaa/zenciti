@@ -1,62 +1,56 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
+import 'package:go_router/go_router.dart';
 import 'package:zenciti/features/restaurant/domain/entities/menu.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_bloc.dart';
+import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_bloc.dart';
 
 class FoodOrderPage extends StatefulWidget {
-  const FoodOrderPage({super.key});
+  final String idReservation;
+  const FoodOrderPage({super.key, required this.idReservation});
 
   @override
   State<FoodOrderPage> createState() => _FoodOrderPageState();
 }
 
 class _FoodOrderPageState extends State<FoodOrderPage> {
-  final String reservationId =
-      "7267f102-12fa-4c28-adda-95e7172cd8ca"; // Replace dynamically if needed
   List<FoodItem> foodItems = [];
 
-  Future<void> submitOrder() async {
-    final selectedFoods = foodItems
-        .where((item) => item.quantity > 0)
-        .map((item) => {
-              "idFood": item.idFood,
-              "quantity": item.quantity,
-              "priceSingle": item.priceSingle,
-            })
-        .toList();
+  void _submitOrderWithBloc(BuildContext context) {
+    final selectedFoods = foodItems.where((item) => item.quantity > 0).toList();
 
-    final body = {
-      "idReservation": reservationId,
-      "foods": selectedFoods,
-    };
-    print("Body: $body");
-
-    final response = await http.post(
-      Uri.parse("http://localhost:8080/order/place"), // Update with your IP
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
-
-    if (response.statusCode == 201) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Order submitted!")));
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Failed: ${response.body}")));
-      print("Failed to submit order: ${response.body}");
+    if (selectedFoods.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please select at least one item.")));
+      return;
     }
+
+    context.read<RestaurantBloc>().add(OrderFood(
+          idReservation: widget.idReservation,
+          food: selectedFoods,
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Submit Food Order')),
-      body: BlocBuilder<RestaurantBloc, RestaurantState>(
+      body: BlocConsumer<RestaurantBloc, RestaurantState>(
+        listener: (context, state) {
+          if (state is OrderSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+            // Navigator.pop(context); // Optionally go back
+
+            context.push('/reservation/qr', extra: widget.idReservation);
+          } else if (state is RestaurantFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Failed: ${state.error}")),
+            );
+          }
+        },
         builder: (context, state) {
           if (state is RestaurantLoading) {
             return const Center(child: CircularProgressIndicator());
@@ -79,7 +73,7 @@ class _FoodOrderPageState extends State<FoodOrderPage> {
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
-                    title: Text(foodItems[index].idFood),
+                    title: Text(item.idFood),
                     subtitle: Text("\$${item.priceSingle.toStringAsFixed(2)}"),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -117,11 +111,10 @@ class _FoodOrderPageState extends State<FoodOrderPage> {
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ElevatedButton(
-          onPressed: submitOrder,
+          onPressed: () => _submitOrderWithBloc(context),
           child: const Text("Submit Order"),
         ),
       ),
     );
   }
 }
-

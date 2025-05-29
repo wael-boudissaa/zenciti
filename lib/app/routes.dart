@@ -24,6 +24,7 @@ import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_
 import 'package:zenciti/features/restaurant/presentation/screens/menu.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/order.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/reservation.dart';
+import 'package:zenciti/features/restaurant/presentation/screens/reservation_QrCode.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurant_details.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurants.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/schema_restaurant.dart';
@@ -40,17 +41,38 @@ class AppRouter {
         builder: (context, state) => HomePage(),
       ),
       GoRoute(
-          path: '/order',
+          path: '/reservation/qr',
           builder: (context, state) {
-            return BlocProvider(
-              create: (context) => RestaurantBloc(
-                RestaurantUseCase(
-                  RestaurantRepoImpl(apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080")),
-                ),
-              )..add(MenuGetFood(idRestaurant: state.extra as String)),
-              child: FoodOrderPage(),
-            );
+            final String idReservation = state.extra as String;
+            return ReservationQrCode(idReservation: idReservation);
           }),
+      GoRoute(
+        path: '/order',
+        builder: (context, state) {
+          final extra = state.extra;
+
+          if (extra is! Map<String, dynamic>) {
+            return Text('Invalid arguments passed to the Order page');
+          }
+
+          final String idRestaurant = extra['idRestaurant'] as String;
+          final String idReservation = extra['reservationId'] as String;
+
+          if (idRestaurant == null || idReservation == null) {
+            return Text('Invalid arguments passed to the Order page');
+          }
+
+          return BlocProvider(
+            create: (context) => RestaurantBloc(
+              RestaurantUseCase(
+                RestaurantRepoImpl(
+                    apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080")),
+              ),
+            )..add(MenuGetFood(idRestaurant: idRestaurant)),
+            child: FoodOrderPage(idReservation: idReservation),
+          );
+        },
+      ),
       GoRoute(
           path: '/restaurant',
           builder: (context, state) {
@@ -59,23 +81,38 @@ class AppRouter {
                 RestaurantUseCase(
                   RestaurantRepoImpl(
                       apiClient:
-                          ApiClient(baseUrl: "http://192.168.1.191:8080")),
+                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
                 ),
               ),
               child: Restaurants(),
             );
           }),
       GoRoute(
-        path: '/reservation',
-        builder: (context, state) => ReservationPage(),
-      ),
+          path: '/reservation',
+          builder: (context, state) {
+            final String idRestaurant = state.extra as String;
+            return BlocProvider(
+              create: (context) => RestaurantBloc(
+                RestaurantUseCase(
+                  RestaurantRepoImpl(
+                      apiClient:
+                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                ),
+              ),
+              child: ReservationPage(
+                  idRestaurant: idRestaurant,
+                  idClient: "80d4a195-79fb-4870-a031-02e7db792cc8"),
+            );
+          }),
       GoRoute(
           path: '/restaurant/menu',
           builder: (context, state) {
             return BlocProvider(
               create: (context) => RestaurantBloc(
                 RestaurantUseCase(
-                  RestaurantRepoImpl(apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080")),
+                  RestaurantRepoImpl(
+                      apiClient:
+                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
                 ),
               )..add(MenuGetFood(idRestaurant: state.extra as String)),
               child: FoodMenu(),
@@ -89,28 +126,32 @@ class AppRouter {
                 RestaurantUseCase(
                   RestaurantRepoImpl(
                       apiClient:
-                          ApiClient(baseUrl: "http://192.168.1.191:8080")),
+                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
                 ),
               )..add(RestaurantGetById(id: state.extra as String)),
               child: RestaurantDetails(),
             );
           }),
       GoRoute(
-          path: '/restaurant/tables',
-          builder: (context, state) {
-            print("EXTRA: ${state.extra}");
-            // final restaurantId = state.extra as String;
-            return BlocProvider<RestaurantTableBloc>(
-              create: (context) => RestaurantTableBloc(
-                RestaurantTablesUseCase(
-                  RestaurantRepoImpl(
-                    apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
-                  ),
+        path: '/restaurant/tables',
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          final String idRestaurant = args['idRestaurant'];
+          final DateTime timeSlot = DateTime.parse(args['timeSlot']);
+
+          return BlocProvider<RestaurantTableBloc>(
+            create: (context) => RestaurantTableBloc(
+              RestaurantTablesUseCase(
+                RestaurantRepoImpl(
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
                 ),
               ),
-              child: RestaurantLayoutScreen(),
-            );
-          }),
+            )..add(RestaurantTableGetAll(
+                idRestaurant: idRestaurant, timeSlot: timeSlot)),
+            child: RestaurantLayoutScreen(), // Modify next
+          );
+        },
+      ),
       GoRoute(
         path: '/home/type/:activityTypeId',
         builder: (context, state) {
@@ -119,7 +160,7 @@ class AppRouter {
             create: (context) => ActivityBloc(
               ActivityUseCase(
                 ActiviteTypeRepoImp(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
                 ),
               ),
             ),
@@ -135,7 +176,7 @@ class AppRouter {
             create: (context) => ActivitySingleBloc(
               ActivitySingleUseCase(
                 ActiviteTypeRepoImp(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
                 ),
               ),
             )..add(GetActivityById(activityId)),

@@ -12,6 +12,7 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
     on<MenuGetFood>(_onMenuGetFood);
     on<RestaurantGetById>(_onRestaurantGetById);
     on<OrderFood>(_onOrderFood);
+    on<CreateReservation>(_onCreateReservation);
   }
 
   Future<void> _onRestaurantGetAll(
@@ -53,8 +54,26 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
       OrderFood event, Emitter<RestaurantState> emit) async {
     emit(RestaurantLoading());
     try {
-      await restaurantUseCase.OrderFood(event.idOrder, event.food);
+      await restaurantUseCase.OrderFood(event.idReservation, event.food);
       emit(OrderSuccess("Order placed successfully"));
+    } catch (e) {
+      emit(RestaurantFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onCreateReservation(
+      CreateReservation event, Emitter<RestaurantState> emit) async {
+    emit(RestaurantLoading());
+    try {
+      final String response = await restaurantUseCase.createReservation(
+        event.idClient,
+        event.idRestaurant,
+        event.idTable,
+        event.timeFrom,
+        event.timeTo,
+        event.numberOfPeople,
+      );
+      emit(ReservationSuccess("Reservation created succefuly", response));
     } catch (e) {
       emit(RestaurantFailure(e.toString()));
     }

@@ -35,3 +35,10 @@ class OrderSuccess<T> extends RestaurantState<T> {
 
   OrderSuccess(this.message);
 }
+
+class ReservationSuccess<T> extends RestaurantState<T> {
+  final String message;
+  final String reservationId;
+
+  ReservationSuccess(this.message, this.reservationId);
+}

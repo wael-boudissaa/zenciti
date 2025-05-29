@@ -1,44 +1,50 @@
 class RestaurantTable {
-  final String idTable;
-  final String idRestaurant;
-  final DateTime reservationTime;
-  final int posX;
-  final int posY;
-  final bool isAvailable;
-  final int durationMinutes;
+  final String? idTable;
+  final String? idReservation;
+  final int? numberOfPeople;
+  final int? posX;
+  final int? posY;
+  final DateTime? timeFrom;
+  final DateTime? timeTo;
+  final String? status; // new field
 
   RestaurantTable({
     required this.idTable,
-    required this.idRestaurant,
-    required this.reservationTime,
+    required this.idReservation,
+    required this.numberOfPeople,
     required this.posX,
     required this.posY,
-    required this.isAvailable,
-    required this.durationMinutes,
+    required this.timeFrom,
+    required this.timeTo,
+    required this.status,
   });
 
   factory RestaurantTable.fromJson(Map<String, dynamic> json) {
     return RestaurantTable(
       idTable: json['idTable'],
-      idRestaurant: json['idRestaurant'],
-      reservationTime: DateTime.parse(json['reservation_time']),
+      idReservation: json['idReservation'],
+      numberOfPeople: json['numberOfPeople'],
       posX: json['posX'],
       posY: json['posY'],
-      isAvailable: json['is_available'],
-      durationMinutes: json['duration_minutes'],
+      timeFrom:
+          json['timeFrom'] != null ? DateTime.parse(json['timeFrom']) : null,
+      timeTo: json['timeTo'] != null ? DateTime.parse(json['timeTo']) : null,
+      status: json['status'], // parse status
     );
   }
-    Map<String, dynamic> toJson() {
-        return {
-        'idTable': idTable,
-        'idRestaurant': idRestaurant,
-        'reservation_time': reservationTime.toIso8601String(),
-        'posX': posX,
-        'posY': posY,
-        'is_available': isAvailable,
-        'duration_minutes': durationMinutes,
-        };
-    }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'idTable': idTable,
+      'idReservation': idReservation,
+      'numberOfPeople': numberOfPeople,
+      'posX': posX,
+      'posY': posY,
+      'timeFrom': timeFrom?.toIso8601String(),
+      'timeTo': timeTo?.toIso8601String(),
+      'status': status,
+    };
+  }
 }
 
 class Restaurant {
@@ -70,16 +76,15 @@ class Restaurant {
       location: json['location'],
     );
   }
-    Map<String, dynamic> toJson() {
-        return {
-        'idRestaurant': idRestaurant,
-        'nameR': nameR,
-        'idAdmineRestaurant': idAdmineRestaurant,
-        'description': description,
-        'image': image,
-        'capacity': capacity,
-        'location': location,
-        };
-    }
-
+  Map<String, dynamic> toJson() {
+    return {
+      'idRestaurant': idRestaurant,
+      'nameR': nameR,
+      'idAdmineRestaurant': idAdmineRestaurant,
+      'description': description,
+      'image': image,
+      'capacity': capacity,
+      'location': location,
+    };
+  }
 }

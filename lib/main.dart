@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       providers: [
         RepositoryProvider<AuthRepositoryImpl>(
           create: (context) => AuthRepositoryImpl(
-            apiClient: ApiClient(baseUrl: "http://192.168.1.191:8080"),
+            apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
           ),
         ),
       ],

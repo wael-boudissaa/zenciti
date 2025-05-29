@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar_pages.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
-import 'dart:convert';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_bloc.dart';
 
@@ -19,11 +19,12 @@ class _RestaurantLayoutScreenState extends State<RestaurantLayoutScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.idRestaurant != null) {
-      context.read<RestaurantTableBloc>().add(
-            RestaurantTableGetAll(idRestaurant: widget.idRestaurant!),
-          );
-    }
+    // if (widget.idRestaurant != null) {
+    //   context.read<RestaurantTableBloc>().add(
+    //         RestaurantTableGetAll(idRestaurant: widget.idRestaurant!,
+    //             timeSlot: widget.
+    //       );
+    // }
   }
 
   void _showTableDetails(RestaurantTable table) {
@@ -35,16 +36,24 @@ class _RestaurantLayoutScreenState extends State<RestaurantLayoutScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Status: ${table.isAvailable ? 'Available' : 'Reserved'}'),
-            if (!table.isAvailable) ...[
-              Text('Reservation: ${table.reservationTime}'),
-              Text('Duration: ${table.durationMinutes} minutes'),
+            Text('Status: ${table.status ?? 'unknown'}'),
+            if (table.status == 'reserved' &&
+                table.timeFrom != null &&
+                table.timeTo != null) ...[
+              SizedBox(height: 8),
+              Text('From: ${table.timeFrom}'),
+              Text('To: ${table.timeTo}'),
+              if (table.numberOfPeople != null)
+                Text('Number of People: ${table.numberOfPeople}'),
             ],
           ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => {
+              Navigator.pop(context, table.idTable),
+              context.pop(table.idTable),
+            },
             child: Text('OK'),
           ),
         ],
@@ -63,41 +72,39 @@ class _RestaurantLayoutScreenState extends State<RestaurantLayoutScreen> {
           } else if (state is RestaurantFailure) {
             return Center(child: Text('Error: ${state.error}'));
           } else if (state is RestaurantSuccess) {
-            final tables = state.restaurant;
+            final tables = state.restaurant as List<RestaurantTable>;
 
-            return Container(
-              width: double.infinity,
-              height: double.infinity,
-              child: Stack(
-                children: [
-                  // Layout / Background here
-                  ...tables.map((table) {
-                    return Positioned(
-                      left: table.posX.toDouble(),
-                      top: table.posY.toDouble(),
-                      child: GestureDetector(
-                        onTap: () => _showTableDetails(table),
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color:
-                                table.isAvailable ? Colors.green : Colors.red,
-                            border: Border.all(width: 2),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Center(
-                            child: Text(
-                              table.idTable,
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
+            return Stack(
+              children: tables.map((table) {
+                final color =
+                    (table.status == 'reserved') ? Colors.red : Colors.green;
+                final double left = table.posX?.toDouble() ?? 0.0;
+                final double top = table.posY?.toDouble() ?? 0.0;
+
+                return Positioned(
+                  left: left,
+                  top: top,
+                  child: GestureDetector(
+                    onTap: () => _showTableDetails(table),
+                    child: Container(
+                      width: 50,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        color: color,
+                        border: Border.all(width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Center(
+                        child: Text(
+                          table.idTable ?? '',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    );
-                  }).toList(),
-                ],
-              ),
+                    ),
+                  ),
+                );
+              }).toList(),
             );
           } else {
             return Center(child: Text('No data found.'));
