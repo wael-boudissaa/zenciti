@@ -72,7 +72,7 @@ class _ReservationPageState extends State<ReservationPage> {
     final from = _combine(_startTime!);
     final to = _combine(_endTime!);
 
-    context.go('/order', extra: widget.idRestaurant);
+    // context.go('/order', extra: widget.idRestaurant);
     if (from == null || to == null) {
       MotionToast.warning(
         description: Text("Please select date, start and end times."),

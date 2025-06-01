@@ -33,6 +33,7 @@ dependencies:
     git:
       url: https://github.com/muhammadtalhasultan/time_range
   shared_preferences: any
+  table_calendar: ^3.0.9
   omni_datetime_picker: ^2.1.1
   flutter:
     sdk: flutter
@@ -51,6 +52,7 @@ dependencies:
   forui: ^0.10.0+1 
   forui_assets: ^0.10.0
   qr_flutter: ^4.1.0
+  font_awesome_flutter: ^10.8.0
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1

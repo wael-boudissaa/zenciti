@@ -15,6 +15,7 @@ import 'package:zenciti/features/activity/presentation/screens/activity_type.dar
 import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
 import 'package:zenciti/features/home/presentation/screens/home_screen.dart';
 import 'package:zenciti/features/restaurant/data/repositories/restaurant_repo.dart';
+import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_table_use_case.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_use_case.dart';
@@ -23,9 +24,10 @@ import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_bloc.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/menu.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/order.dart';
-import 'package:zenciti/features/restaurant/presentation/screens/reservation.dart';
+import 'package:zenciti/features/restaurant/presentation/screens/reservation_test.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/reservation_QrCode.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurant_details.dart';
+import 'package:zenciti/features/restaurant/presentation/screens/restaurant_details_test.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurants.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/schema_restaurant.dart';
 
@@ -90,19 +92,16 @@ class AppRouter {
       GoRoute(
           path: '/reservation',
           builder: (context, state) {
-            final String idRestaurant = state.extra as String;
+            final Restaurant restaurant  = state.extra as Restaurant;
             return BlocProvider(
-              create: (context) => RestaurantBloc(
-                RestaurantUseCase(
-                  RestaurantRepoImpl(
-                      apiClient:
-                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
-                ),
-              ),
-              child: ReservationPage(
-                  idRestaurant: idRestaurant,
-                  idClient: "80d4a195-79fb-4870-a031-02e7db792cc8"),
-            );
+                create: (context) => RestaurantBloc(
+                      RestaurantUseCase(
+                        RestaurantRepoImpl(
+                            apiClient:
+                                ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                      ),
+                    ),
+                child: ReservationPage(restaurant:restaurant));
           }),
       GoRoute(
           path: '/restaurant/menu',
@@ -129,7 +128,7 @@ class AppRouter {
                           ApiClient(baseUrl: "http://192.168.1.41:8080")),
                 ),
               )..add(RestaurantGetById(id: state.extra as String)),
-              child: RestaurantDetails(),
+              child: RestaurantDetailsPage(),
             );
           }),
       GoRoute(
