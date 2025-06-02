@@ -70,7 +70,6 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
         event.idRestaurant,
         event.idTable,
         event.timeFrom,
-        event.timeTo,
         event.numberOfPeople,
       );
       emit(ReservationSuccess("Reservation created succefuly", response));

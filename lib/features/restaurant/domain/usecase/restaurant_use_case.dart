@@ -30,9 +30,8 @@ class RestaurantUseCase {
       String idRestaurant,
       String idTable,
       DateTime timeFrom,
-      DateTime timeTo,
       int numberOfPeople) async {
     return await _repository.createReservation(
-        idClient, idRestaurant, idTable, timeFrom, timeTo, numberOfPeople);
+        idClient, idRestaurant, idTable, timeFrom,  numberOfPeople);
   }
 }

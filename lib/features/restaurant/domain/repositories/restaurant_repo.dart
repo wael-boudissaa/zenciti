@@ -13,7 +13,7 @@ abstract class RestaurantRepo {
   Future<List<MenuItem>> getMenuActife(String idRestaurant);
   void OrderFood(String idReservation, List<FoodItem> food);
   Future<String> createReservation(String idClient,String idRestaurant, String idTable,
-      DateTime timeFrom, DateTime timeTo, int numberOfPeople);
+      DateTime timeFrom, int numberOfPeople);
   // Future<List<Activity>> getActivitiesByType(String activityType);
   // Future<List<Activity>> getActivitiesByPopularity();
   // Future<Activity> getActivityById(String activityId);

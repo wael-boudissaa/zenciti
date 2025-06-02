@@ -119,13 +119,8 @@ class RestaurantRepoImpl implements RestaurantRepo {
   }
 
   @override
-  Future<String> createReservation(
-      String idClient,
-      String idRestaurant,
-      String idTable,
-      DateTime timeFrom,
-      DateTime timeTo,
-      int numberOfPeople) async {
+  Future<String> createReservation(String idClient, String idRestaurant,
+      String idTable, DateTime timeFrom, int numberOfPeople) async {
     try {
       final fullUrl = '/reservation';
       print('POST → $fullUrl');
@@ -134,7 +129,6 @@ class RestaurantRepoImpl implements RestaurantRepo {
         'idRestaurant': idRestaurant,
         'idTable': idTable,
         'timeFrom': timeFrom.toIso8601String(),
-        'timeTo': timeTo.toIso8601String(),
         'numberOfPeople': numberOfPeople,
       };
       final response = await apiClient.post(fullUrl, body);

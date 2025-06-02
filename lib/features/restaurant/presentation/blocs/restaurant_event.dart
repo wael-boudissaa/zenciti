@@ -25,7 +25,7 @@ class CreateReservation extends RestaurantEvent {
   final String idRestaurant;
   final String idTable;
   final DateTime timeFrom;
-  final DateTime timeTo;
+  final DateTime? timeTo;
   final int numberOfPeople;
 
   const CreateReservation({
@@ -33,7 +33,7 @@ class CreateReservation extends RestaurantEvent {
     required this.idRestaurant,
     required this.idTable,
     required this.timeFrom,
-    required this.timeTo,
+     this.timeTo,
     required this.numberOfPeople,
   });
 }
