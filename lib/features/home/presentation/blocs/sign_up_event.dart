@@ -41,10 +41,12 @@ class SignUpSubmitted extends SignUpEvent {
     final String lastName;
     final String address;
     final String phone;
+    final String username;
     final String password;
     
     const SignUpSubmitted({
         required this.email,
+        required this.username,
         required this.firstName,
         required this.lastName,
         required this.address,

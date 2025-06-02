@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 
 class SearchBarHome extends StatefulWidget {
   const SearchBarHome({super.key});
@@ -52,6 +53,9 @@ class _SearchBarHomeState extends State<SearchBarHome> {
                   ),
                 ),
                 InkWell(
+                    onTap: () {
+                        context.push('/notification');
+                    },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 6),
                     child: Icon(FontAwesomeIcons.bell,

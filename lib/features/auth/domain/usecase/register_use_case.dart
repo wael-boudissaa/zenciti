@@ -6,8 +6,11 @@ class RegisterUseCase {
 
   RegisterUseCase(this._authRepo);
 
-
   Future<void> execute(User user) async {
     return await _authRepo.register(user);
+  }
+
+  Future<UserProfile> getUserProfile(String idClient) async {
+    return await _authRepo.getUserProfile(idClient);
   }
 }

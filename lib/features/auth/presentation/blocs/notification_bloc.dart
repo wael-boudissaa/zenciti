@@ -1,0 +1,33 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zenciti/features/auth/domain/repositories/notification_repo.dart';
+import 'package:zenciti/features/auth/domain/usecase/friend_request_use_case.dart';
+import 'package:zenciti/features/auth/presentation/blocs/notification_state.dart';
+part 'notification_event.dart';
+
+class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
+  final FriendRequestUseCase friendRequestUseCase;
+
+  NotificationBloc(this.friendRequestUseCase) : super(NotificationInitial()) {
+    on<NotificationGet>(_onNotificationGet);
+  }
+
+  Future<void> _onNotificationGet(
+    NotificationGet event,
+    Emitter<NotificationState> emit,
+  ) async {
+    emit(NotificationLoading()); 
+
+    try {
+      final friendRequestList =
+          await friendRequestUseCase.execute(event.idClient);
+      emit(NotificationSucces(
+          friendRequestList)); 
+    } catch (e) {
+      emit(NotificationFailure(
+          e.toString())); 
+    } catch (e) {
+      emit(NotificationFailure(
+          'An unexpected error occurred: ${e.toString()}')); // Emit failure state with error message
+    }
+  }
+}

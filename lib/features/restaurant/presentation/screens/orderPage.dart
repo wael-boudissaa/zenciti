@@ -70,7 +70,6 @@ class _OrderPageState extends State<OrderPage> {
   Widget build(BuildContext context) {
     final primary = const Color(0xFF00614B);
 
-
     return Scaffold(
       backgroundColor: const Color(0xFFF9FAFB),
       body: SafeArea(
@@ -81,7 +80,7 @@ class _OrderPageState extends State<OrderPage> {
                 SnackBar(content: Text(state.message)),
               );
               // Go to QR code page or wherever you want after order
-                context.push('/reservation/qr', extra: widget.idReservation);
+              context.push('/reservation/qr', extra: widget.idReservation);
             } else if (state is RestaurantFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("Failed: ${state.error}")),
@@ -307,7 +306,21 @@ class _OrderPageState extends State<OrderPage> {
                 borderRadius: BorderRadius.circular(10),
                 child: item.image != null && item.image!.isNotEmpty
                     ? Image.network(item.image!,
-                        width: 72, height: 72, fit: BoxFit.cover)
+                        errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 72,
+                          height: 72,
+                          color: const Color(0xFFE5E5E5),
+                          child: const Icon(Icons.image_not_supported),
+                        );
+                      }, loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const SizedBox(
+                          width: 72,
+                          height: 72,
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }, width: 72, height: 72, fit: BoxFit.cover)
                     : Container(
                         width: 72,
                         height: 72,

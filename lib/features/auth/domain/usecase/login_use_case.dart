@@ -1,6 +1,5 @@
 // domain/use_cases/login_use_case.dart
 
-import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
 import 'package:zenciti/features/auth/domain/repositories/auth_repo.dart';
 

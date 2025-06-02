@@ -23,6 +23,7 @@ class AuthRepositoryImpl implements AuthRepo {
       '/signup',
       {
         'email': user.email,
+        'username': user.username,
         'first_name': user.firstName,
         'last_name': user.lastName,
         'address': user.address,
@@ -49,14 +50,46 @@ class AuthRepositoryImpl implements AuthRepo {
       'password': user.password,
     });
 
-   if (response['status'] == 200) {
-    final token = response['data']['token']; 
+    if (response['status'] == 200) {
+      final data = response['data'];
 
-    await saveTokens(token);
+      // Save tokens and ids to secure storage
+      final token = data['token'] as String;
+      final refreshToken = data['user']['refreshToken'] as String?;
+      final idProfile = data['user']['idProfile'] as String?;
+      final idClient = data['user']['idClient'] as String?;
+      final userType = data['user']['type'] as String?;
 
-    // Save token or do something with it
-    return;
-  } else {
-    throw Exception('Failed to login: ${response['data']}');
-  }}
+      await storage.write(key: 'token', value: token);
+      if (refreshToken != null) {
+        await storage.write(key: 'refreshToken', value: refreshToken);
+      }
+      if (idProfile != null) {
+        await storage.write(key: 'idProfile', value: idProfile);
+      }
+      if (idClient != null) {
+        await storage.write(key: 'idClient', value: idClient);
+      }
+      if (userType != null) {
+        await storage.write(key: 'userType', value: userType);
+      }
+
+      // You can also parse and return a User entity if needed
+      return;
+    } else {
+      throw Exception('Failed to login: ${response['data']}');
+    }
+  }
+
+  @override
+  Future<UserProfile> getUserProfile(String idClient) {
+    return apiClient.get('/clientinformation/$idClient').then((response) {
+      if (response['status'] == 200) {
+        final data = response['data'];
+        return UserProfile.fromJson(data);
+      } else {
+        throw Exception('Failed to load user profile');
+      }
+    });
+  }
 }

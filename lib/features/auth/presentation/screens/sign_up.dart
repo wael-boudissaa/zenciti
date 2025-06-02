@@ -22,6 +22,7 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final textEmail = TextEditingController();
+  final textUsername = TextEditingController();
   final textFirstName = TextEditingController();
   final textPhone = TextEditingController();
   final textAddress = TextEditingController();
@@ -93,6 +94,11 @@ class _SignUpState extends State<SignUp> {
                               description: "Please enter your email."),
                           const SizedBox(height: 15),
                           AuthField(
+                              controller: textUsername,
+                              textlabel: "Username",
+                              description: "Please enter your username."),
+                          const SizedBox(height: 15),
+                          AuthField(
                               controller: textAddress,
                               textlabel: "Address",
                               description: "Please enter your address."),
@@ -145,6 +151,7 @@ class _SignUpState extends State<SignUp> {
                                         lastName: textLastName.text,
                                         address: textAddress.text,
                                         password: textPassword.text,
+                                        username: textUsername.text,
                                         phone: textPhone.text,
 
                                       ),

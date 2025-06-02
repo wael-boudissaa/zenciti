@@ -117,8 +117,8 @@ class MenuItem {
   final String idFood;
   final String idCategory;
   final String name;
-  final String? description;
-  final String? image;
+  final String description;
+  final String image;
   final double price;
   final String status;
 
@@ -128,8 +128,8 @@ class MenuItem {
     required this.idFood,
     required this.idCategory,
     required this.name,
-    this.description,
-    this.image,
+    required this.description,
+    required this.image,
     required this.price,
     required this.status,
   });

@@ -26,6 +26,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       // Create a User entity
       final user = User(
         email: event.email,
+        username: event.username,
         firstName: event.firstName,
         lastName: event.lastName,
         address: event.address,
@@ -77,3 +78,4 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 }
+

@@ -27,6 +27,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       final user = User(
         email: event.email,
         firstName: event.firstName,
+        username: event.username,
         lastName: event.lastName,
         address: event.address,
         phone: event.phone,
@@ -43,6 +44,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       emit(SignUpFailure(e.toString()));
     }
   }
+
 }
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
@@ -66,7 +68,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
       // Call the use case
       await loginUseCase.execute(user);
-      emit(LoginSuccess());
+       emit(LoginSuccess);
 
     } catch (e) {
       // If an error occurs, emit LoginFailure

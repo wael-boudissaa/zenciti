@@ -170,7 +170,10 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                             borderRadius: BorderRadius.circular(12)),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                      context.push('/restaurant/menu', extra: r.idRestaurant);
+
+                      },
                       icon: const Icon(FontAwesomeIcons.utensils, size: 18),
                       label: const Text(
                         "Check MENU",

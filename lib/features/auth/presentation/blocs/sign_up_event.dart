@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 
 abstract class SignUpEvent extends Equatable {
@@ -15,6 +14,12 @@ class SignUpEmailChanged extends SignUpEvent {
 
   @override
   List<Object?> get props => [email];
+}
+
+class GetProfileData extends SignUpEvent {
+  final String idClient;
+
+  const GetProfileData(this.idClient);
 }
 
 class SignUpFirstNameChanged extends SignUpEvent {
@@ -36,22 +41,24 @@ class SignUpLastNameChanged extends SignUpEvent {
 }
 
 class SignUpSubmitted extends SignUpEvent {
-    final String email;
-    final String firstName;
-    final String lastName;
-    final String address;
-    final String phone;
-    final String password;
-    
-    const SignUpSubmitted({
-        required this.email,
-        required this.firstName,
-        required this.lastName,
-        required this.address,
-        required this.phone,
-        required this.password,
-    });
-    
-    @override
-    List<Object?> get props => [email, firstName, lastName];
+  final String email;
+  final String firstName;
+  final String lastName;
+  final String address;
+  final String phone;
+  final String password;
+  final String username;
+
+  const SignUpSubmitted({
+    required this.email,
+    required this.username,
+    required this.firstName,
+    required this.lastName,
+    required this.address,
+    required this.phone,
+    required this.password,
+  });
+
+  @override
+  List<Object?> get props => [email, firstName, lastName];
 }

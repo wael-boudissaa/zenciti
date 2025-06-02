@@ -14,3 +14,9 @@ class SignUpFailure extends SignUpState {
 
   SignUpFailure(this.error);
 }
+
+class GetClientSuccess extends SignUpState {
+  final User user;
+
+  GetClientSuccess(this.user);
+}

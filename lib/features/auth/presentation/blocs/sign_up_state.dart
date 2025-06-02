@@ -14,3 +14,8 @@ class SignUpFailure extends SignUpState {
 
   SignUpFailure(this.error);
 }
+class ProfileInformationSuccess extends SignUpState {
+  final  UserProfile user;
+
+  ProfileInformationSuccess(this.user);
+}

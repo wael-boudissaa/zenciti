@@ -1,4 +1,3 @@
-// lib/app/config/app_router.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +11,11 @@ import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart
 import 'package:zenciti/features/activity/presentation/blocs/activity_single.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_details.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_type.dart';
+import 'package:zenciti/features/auth/data/repositories/notification_repositorie.dart';
+import 'package:zenciti/features/auth/domain/usecase/friend_request_use_case.dart';
+import 'package:zenciti/features/auth/presentation/blocs/notification_bloc.dart';
 import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
+import 'package:zenciti/features/auth/presentation/screens/notification_page.dart';
 import 'package:zenciti/features/home/presentation/screens/home_screen.dart';
 import 'package:zenciti/features/restaurant/data/repositories/restaurant_repo.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
@@ -30,11 +33,33 @@ import 'package:zenciti/features/restaurant/presentation/screens/restaurant_deta
 import 'package:zenciti/features/restaurant/presentation/screens/restaurant_details_test.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurants.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/schema_restaurant.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../features/restaurant/domain/entities/tables.dart';
 
+final FlutterSecureStorage storage = FlutterSecureStorage();
+
+Future<String?> getToken() async => await storage.read(key: 'token');
+Future<String?> getIdClient() async => await storage.read(key: 'idClient');
+
 class AppRouter {
   static final GoRouter router = GoRouter(
+    initialLocation: '/',
+    redirect: (context, state) async {
+      // For GoRouter v6+, use state.uri.toString() or state.fullPath
+      final String location = state.fullPath ?? state.uri.toString();
+      final token = await getToken();
+
+      // If on login page and already authenticated, redirect to home
+      if (location == '/' && token != null && token.isNotEmpty) {
+        return '/home';
+      }
+      // If not authenticated and trying to access a protected route, redirect to login
+      if (location != '/' && (token == null || token.isEmpty)) {
+        return '/';
+      }
+      return null;
+    },
     routes: [
       GoRoute(
         path: '/',
@@ -45,16 +70,61 @@ class AppRouter {
         builder: (context, state) => HomePage(),
       ),
       GoRoute(
-          path: '/reservation/qr',
+        path: '/reservation/qr',
+        builder: (context, state) {
+          final String idReservation = state.extra as String;
+          return ReservationQrCode(idReservation: idReservation);
+        },
+      ),
+      GoRoute(
+          path: '/notification',
           builder: (context, state) {
-            final String idReservation = state.extra as String;
-            return ReservationQrCode(idReservation: idReservation);
+            // if (extra is! Map<String, dynamic>) {
+            //   return Text('Invalid arguments passed to the Order page');
+            // }
+            //
+            // final String idRestaurant = extra['idRestaurant'] as String;
+            // final String idReservation = extra['reservationId'] as String;
+            //
+            // if (idRestaurant == null || idReservation == null) {
+            //   return Text('Invalid arguments passed to the Order page');
+            // }
+
+            return FutureBuilder<String?>(
+              future: getIdClient(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return const Center(child: Text('No client ID found'));
+                }
+
+                final idClient = snapshot.data!;
+
+                return BlocProvider(
+                  create: (context) => NotificationBloc(
+                    FriendRequestUseCase(
+                      NotificationRepoImpl(
+                        apiClient:
+                            ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                      ),
+                    ),
+                  )..add(NotificationGet(idClient)),
+                  child: NotificationPage(idClient: idClient),
+                );
+              },
+            );
           }),
       GoRoute(
         path: '/order',
         builder: (context, state) {
           final extra = state.extra;
-
           if (extra is! Map<String, dynamic>) {
             return Text('Invalid arguments passed to the Order page');
           }
@@ -70,73 +140,88 @@ class AppRouter {
             create: (context) => RestaurantBloc(
               RestaurantUseCase(
                 RestaurantRepoImpl(
-                    apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                ),
               ),
             )..add(MenuGetFood(idRestaurant: idRestaurant)),
-            child:OrderPage(idReservation:idReservation)
-            // child: FoodOrderPage(idReservation: idReservation),
+            child: OrderPage(idReservation: idReservation),
           );
         },
       ),
       GoRoute(
-          path: '/restaurant',
-          builder: (context, state) {
-            return BlocProvider(
-              create: (context) => RestaurantBloc(
-                RestaurantUseCase(
-                  RestaurantRepoImpl(
-                      apiClient:
-                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
+        path: '/restaurant',
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => RestaurantBloc(
+              RestaurantUseCase(
+                RestaurantRepoImpl(
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
                 ),
               ),
-              child: Restaurants(),
-            );
-          }),
+            ),
+            child: Restaurants(),
+          );
+        },
+      ),
       GoRoute(
-          path: '/reservation',
-          builder: (context, state) {
-            final Restaurant restaurant = state.extra as Restaurant;
-            return BlocProvider(
-              create: (context) => RestaurantBloc(
-                RestaurantUseCase(
-                  RestaurantRepoImpl(
-                      apiClient:
-                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
+        path: '/reservation',
+        builder: (context, state) {
+          final Restaurant restaurant = state.extra as Restaurant;
+          // Use FutureBuilder to get idClient from secure storage
+          return FutureBuilder<String?>(
+            future: getIdClient(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final idClient = snapshot.data!;
+              return BlocProvider(
+                create: (context) => RestaurantBloc(
+                  RestaurantUseCase(
+                    RestaurantRepoImpl(
+                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                    ),
+                  ),
                 ),
-              ),
-              child: ReservationPage(
+                child: ReservationPage(
                   restaurant: restaurant,
-                  idClient: "80d4a195-79fb-4870-a031-02e7db792cc8"),
-            );
-          }),
-      GoRoute(
-          path: '/restaurant/menu',
-          builder: (context, state) {
-            return BlocProvider(
-              create: (context) => RestaurantBloc(
-                RestaurantUseCase(
-                  RestaurantRepoImpl(
-                      apiClient:
-                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                  idClient: idClient,
                 ),
-              )..add(MenuGetFood(idRestaurant: state.extra as String)),
-              child: FoodMenu(),
-            );
-          }),
+              );
+            },
+          );
+        },
+      ),
       GoRoute(
-          path: '/home/restaurant/s/:restaurantId',
-          builder: (context, state) {
-            return BlocProvider(
-              create: (context) => RestaurantBloc(
-                RestaurantUseCase(
-                  RestaurantRepoImpl(
-                      apiClient:
-                          ApiClient(baseUrl: "http://192.168.1.41:8080")),
+        path: '/restaurant/menu',
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => RestaurantBloc(
+              RestaurantUseCase(
+                RestaurantRepoImpl(
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
                 ),
-              )..add(RestaurantGetById(id: state.extra as String)),
-              child: RestaurantDetailsPage(),
-            );
-          }),
+              ),
+            )..add(MenuGetFood(idRestaurant: state.extra as String)),
+            child: MenuPage(),
+          );
+        },
+      ),
+      GoRoute(
+        path: '/home/restaurant/s/:restaurantId',
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => RestaurantBloc(
+              RestaurantUseCase(
+                RestaurantRepoImpl(
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                ),
+              ),
+            )..add(RestaurantGetById(id: state.extra as String)),
+            child: RestaurantDetailsPage(),
+          );
+        },
+      ),
       GoRoute(
         path: '/restaurant/tables',
         builder: (context, state) {
@@ -153,7 +238,7 @@ class AppRouter {
               ),
             )..add(RestaurantTableGetAll(
                 idRestaurant: idRestaurant, timeSlot: timeSlot)),
-            child: RestaurantLayoutScreen(), // Modify next
+            child: RestaurantLayoutScreen(),
           );
         },
       ),
