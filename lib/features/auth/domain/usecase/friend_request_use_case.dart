@@ -15,4 +15,7 @@ class FriendRequestUseCase {
   Future<void> executeAccept(String idFriendship) async {
     return await _repository.acceptFriendRequest(idFriendship);
   }
+  Future<void> executeSend(String usernameSender , String usernameReceiver) async {
+    return await _repository.sendRequest(usernameSender, usernameReceiver);
+  }
 }

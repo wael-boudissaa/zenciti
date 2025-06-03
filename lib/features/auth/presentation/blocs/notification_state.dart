@@ -23,3 +23,8 @@ class AcceptRequestState extends NotificationState {
 
   AcceptRequestState(this.message);
 }
+class SendRequestState extends NotificationState {
+  final String message;
+
+  SendRequestState(this.message);
+}

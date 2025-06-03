@@ -31,4 +31,16 @@ class NotificationRepoImpl implements FriendRequestRepo {
       }
     });
   }
+
+  @override
+  Future<void> sendRequest(String usernameSender, String usernameReceiver) {
+    return apiClient.post('/sendrequest', {
+      'from_client': usernameSender,
+      'to_client': usernameReceiver,
+    }).then((response) {
+      if (response['status'] != 200) {
+        throw Exception('Failed to send request');
+      }
+    });
+  }
 }

@@ -10,6 +10,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc(this.friendRequestUseCase) : super(NotificationInitial()) {
     on<NotificationGet>(_onNotificationGet);
     on<AcceptRequest>(_onAcceptRequest);
+    on<SendRequest>(_onSendRequest);
   }
 
   Future<void> _onNotificationGet(
@@ -40,6 +41,20 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     } catch (e) {
       emit(NotificationFailure(
           'Failed to accept friend request: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onSendRequest(
+    SendRequest event,
+    Emitter<NotificationState> emit,
+  ) async {
+    try {
+      await friendRequestUseCase.executeSend(
+          event.usernameSender, event.usernameReceiver);
+      emit(SendRequestState('Friend request sent successfully'));
+    } catch (e) {
+      emit(NotificationFailure(
+          'Failed to send friend request: ${e.toString()}'));
     }
   }
 }

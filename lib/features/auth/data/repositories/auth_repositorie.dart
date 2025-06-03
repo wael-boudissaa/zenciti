@@ -59,6 +59,7 @@ class AuthRepositoryImpl implements AuthRepo {
       final idProfile = data['user']['idProfile'] as String?;
       final idClient = data['user']['idClient'] as String?;
       final userType = data['user']['type'] as String?;
+      final username = data['user']['username'] as String?;
 
       await storage.write(key: 'token', value: token);
       if (refreshToken != null) {
@@ -73,16 +74,44 @@ class AuthRepositoryImpl implements AuthRepo {
       if (userType != null) {
         await storage.write(key: 'userType', value: userType);
       }
+      if (username != null) {
+        await storage.write(key: 'username', value: username);
 
-      // You can also parse and return a User entity if needed
-      return;
-    } else {
-      throw Exception('Failed to login: ${response['data']}');
+        // You can also parse and return a User entity if needed
+        return;
+      } else {
+        throw Exception('Failed to login: ${response['data']}');
+      }
+    }
+
+    @override
+    Future<UserProfile> getUserProfile(String idClient) async {
+      return apiClient.get('/clientinformation/$idClient').then((response) {
+        if (response['status'] == 200) {
+          final data = response['data'];
+          return UserProfile.fromJson(data);
+        } else {
+          throw Exception('Failed to load user profile');
+        }
+      });
+    }
+
+    @override
+    Future<UserProfile> get(String username) async {
+      return apiClient.get('/usernameinformation/$username').then((response) {
+        if (response['status'] == 200) {
+          final data = response['data'];
+          return UserProfile.fromJson(data);
+        } else {
+          throw Exception('Failed to load user profile by username');
+        }
+      });
     }
   }
 
+
   @override
-  Future<UserProfile> getUserProfile(String idClient) async {
+  Future<UserProfile> getUserProfile(String idClient) {
     return apiClient.get('/clientinformation/$idClient').then((response) {
       if (response['status'] == 200) {
         final data = response['data'];
@@ -94,10 +123,8 @@ class AuthRepositoryImpl implements AuthRepo {
   }
 
   @override
-  Future<UserProfile> getUserProfileByUsername(String username) async {
-    return apiClient
-        .get('/usernameinformation/$username')
-        .then((response) {
+  Future<UserProfile> getUserProfileByUsername(String username) {
+    return apiClient.get('/usernameinformation/$username').then((response) {
       if (response['status'] == 200) {
         final data = response['data'];
         return UserProfile.fromJson(data);

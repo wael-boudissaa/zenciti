@@ -75,15 +75,27 @@ class AppRouter {
         path: '/profile/:username',
         builder: (context, state) {
           final username = state.pathParameters['username']!;
-          return BlocProvider<ProfileInformationBloc>(
-            create: (context) => ProfileInformationBloc(
-              RegisterUseCase(
-                AuthRepositoryImpl(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<ProfileInformationBloc>(
+                create: (context) => ProfileInformationBloc(
+                  RegisterUseCase(
+                    AuthRepositoryImpl(
+                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                    ),
+                  ),
+                )..add(GetUsernameData(username)),
+              ),
+              BlocProvider<NotificationBloc>(
+                create: (context) => NotificationBloc(
+                  FriendRequestUseCase(
+                    NotificationRepoImpl(
+                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                    ),
+                  ),
                 ),
               ),
-            )..add(
-                GetUsernameData(username)), // <--- dispatch event by username
+            ],
             child: ProfilePageUsername(username: username),
           );
         },

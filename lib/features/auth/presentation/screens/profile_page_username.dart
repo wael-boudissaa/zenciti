@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/app/config/theme.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
 import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:zenciti/features/auth/presentation/blocs/notification_bloc.dart';
 import 'package:zenciti/features/auth/presentation/blocs/profile_information_bloc.dart';
 import 'package:zenciti/features/auth/presentation/screens/profile_page.dart';
 
@@ -142,7 +144,22 @@ class ProfilePageUsername extends StatelessWidget {
                                       fontSize: 14,
                                       fontWeight: FontWeight.w500),
                                 ),
-                                onPressed: () {},
+                                onPressed: () async {
+                                  final storage = FlutterSecureStorage();
+                                  final usernameSender =
+                                      await storage.read(key: 'username');
+
+                                  if (usernameSender != null) {
+                                    context.read<NotificationBloc>().add(
+                                          SendRequest(
+                                              usernameSender, user.username),
+                                        );
+                                  } else {
+                                    // Handle case when username is not found (optional)
+                                    print(
+                                        'Username not found in secure storage.');
+                                  }
+                                },
                                 icon: const FaIcon(FontAwesomeIcons.userPlus,
                                     size: 16),
                                 label: const Text("Follow"),
@@ -248,4 +265,3 @@ class ProfilePageUsername extends StatelessWidget {
 }
 
 // ... keep _ProfileStat, _ActivityCard, ActivityHeatmap, etc.
-
