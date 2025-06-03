@@ -7,7 +7,6 @@ import 'package:zenciti/features/activity/presentation/blocs/activity_populaire_
 import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 import 'package:zenciti/features/home/presentation/widgets/restaurant_card.dart';
-import 'package:zenciti/features/home/presentation/widgets/search_bar.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_bloc.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.dart';
@@ -21,23 +20,128 @@ class Home_Page extends StatefulWidget {
 }
 
 class _Home_PageState extends State<Home_Page> {
+  final TextEditingController _searchController = TextEditingController();
+  List<String> _usernames = [
+    // Demo usernames, you should fetch this from your API or global state
+    "wael_boudissa",
+    "tasnime",
+    "alex_johnson",
+    "sarah_miller",
+    "michael_chen",
+    "lelekkele",
+    "jsjwj",
+  ];
+  List<String> _filteredUsernames = [];
+
   @override
   void initState() {
     super.initState();
     context.read<ActivityTypeBloc>().add(ActivityTypeGet());
     context.read<RestaurantBloc>().add(RestaurantGetAll());
+    _filteredUsernames = _usernames;
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _onSearchChanged() {
+    final input = _searchController.text.trim().toLowerCase();
+    setState(() {
+      if (input.isEmpty) {
+        _filteredUsernames = _usernames;
+      } else {
+        _filteredUsernames = _usernames
+            .where((username) => username.toLowerCase().contains(input))
+            .toList();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onUsernameTap(String username) {
+    // Here you should navigate to the user's profile page.
+    // For example, with go_router:
+    context.push('/profile/$username', extra: username);
+    // If your profile page needs idClient, you can map from username to idClient or fetch it from the API.
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-          padding : const EdgeInsets.all(5.0),
+        padding: const EdgeInsets.all(5.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SearchBarHome(),
+              // Username Search Bar
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Search for Usernames",
+                      style: TextStyle(
+                        color: AppColors.greenPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        hintText: "Type a username",
+                        prefixIcon:
+                            const Icon(Icons.search, color: Colors.grey),
+                        contentPadding: const EdgeInsets.symmetric(vertical: 4),
+                        filled: true,
+                        fillColor: Colors.grey[100],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(22),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                    if (_searchController.text.isNotEmpty)
+                      Container(
+                        constraints: const BoxConstraints(maxHeight: 180),
+                        margin: const EdgeInsets.only(top: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade200),
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 7,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: _filteredUsernames.length,
+                          separatorBuilder: (_, __) =>
+                              Divider(height: 0, color: Colors.grey[200]),
+                          itemBuilder: (context, index) {
+                            final username = _filteredUsernames[index];
+                            return ListTile(
+                              title: Text(username,
+                                  style: const TextStyle(fontSize: 16)),
+                              onTap: () => _onUsernameTap(username),
+                            );
+                          },
+                        ),
+                      ),
+                  ],
+                ),
+              ),
               const SizedBox(height: 20),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),

@@ -11,11 +11,17 @@ import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart
 import 'package:zenciti/features/activity/presentation/blocs/activity_single.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_details.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_type.dart';
+import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
 import 'package:zenciti/features/auth/data/repositories/notification_repositorie.dart';
 import 'package:zenciti/features/auth/domain/usecase/friend_request_use_case.dart';
+import 'package:zenciti/features/auth/domain/usecase/register_use_case.dart';
 import 'package:zenciti/features/auth/presentation/blocs/notification_bloc.dart';
+import 'package:zenciti/features/auth/presentation/blocs/profile_information_bloc.dart';
+import 'package:zenciti/features/auth/presentation/blocs/sign_up_event.dart';
 import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
 import 'package:zenciti/features/auth/presentation/screens/notification_page.dart';
+import 'package:zenciti/features/auth/presentation/screens/profile_page.dart';
+import 'package:zenciti/features/auth/presentation/screens/profile_page_username.dart';
 import 'package:zenciti/features/home/presentation/screens/home_screen.dart';
 import 'package:zenciti/features/restaurant/data/repositories/restaurant_repo.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
@@ -64,6 +70,23 @@ class AppRouter {
       GoRoute(
         path: '/',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/profile/:username',
+        builder: (context, state) {
+          final username = state.pathParameters['username']!;
+          return BlocProvider<ProfileInformationBloc>(
+            create: (context) => ProfileInformationBloc(
+              RegisterUseCase(
+                AuthRepositoryImpl(
+                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                ),
+              ),
+            )..add(
+                GetUsernameData(username)), // <--- dispatch event by username
+            child: ProfilePageUsername(username: username),
+          );
+        },
       ),
       GoRoute(
         path: '/home',

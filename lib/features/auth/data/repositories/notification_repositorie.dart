@@ -13,13 +13,22 @@ class NotificationRepoImpl implements FriendRequestRepo {
 
     if (response['status'] == 200) {
       final List<dynamic> data = response['data'];
-      
-      return data.map<FriendRequestList>(
-        (item) => FriendRequestList.fromJson(item)
-      ).toList();
+
+      return data
+          .map<FriendRequestList>((item) => FriendRequestList.fromJson(item))
+          .toList();
     } else {
       throw Exception('Failed to load friend requests');
     }
   }
-}
 
+  @override
+  Future<void> acceptFriendRequest(String idFriendship) {
+    return apiClient.post(
+        '/acceptfriendship', {'idFriendship': idFriendship}).then((response) {
+      if (response['status'] != 200) {
+        throw Exception('Failed to accept friend request');
+      }
+    });
+  }
+}

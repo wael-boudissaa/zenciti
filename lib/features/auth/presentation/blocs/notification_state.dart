@@ -18,3 +18,8 @@ class NotificationFailure extends NotificationState {
 
   NotificationFailure(this.error);
 }
+class AcceptRequestState extends NotificationState {
+  final String message;
+
+  AcceptRequestState(this.message);
+}

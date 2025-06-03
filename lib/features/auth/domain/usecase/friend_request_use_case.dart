@@ -9,6 +9,10 @@ class FriendRequestUseCase {
   FriendRequestUseCase(this._repository);
 
   Future<List<FriendRequestList>> execute(String idClient) async {
-    return await  _repository.getFriendRequestList(idClient);
+    return await _repository.getFriendRequestList(idClient);
+  }
+
+  Future<void> executeAccept(String idFriendship) async {
+    return await _repository.acceptFriendRequest(idFriendship);
   }
 }

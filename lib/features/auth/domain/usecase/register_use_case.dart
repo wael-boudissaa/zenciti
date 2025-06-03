@@ -13,4 +13,8 @@ class RegisterUseCase {
   Future<UserProfile> getUserProfile(String idClient) async {
     return await _authRepo.getUserProfile(idClient);
   }
+
+  Future<UserProfile> getUserProfileByUsername(String username) async {
+    return await _authRepo.getUserProfileByUsername(username);
+  }
 }

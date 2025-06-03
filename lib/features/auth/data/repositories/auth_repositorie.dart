@@ -82,13 +82,27 @@ class AuthRepositoryImpl implements AuthRepo {
   }
 
   @override
-  Future<UserProfile> getUserProfile(String idClient) {
+  Future<UserProfile> getUserProfile(String idClient) async {
     return apiClient.get('/clientinformation/$idClient').then((response) {
       if (response['status'] == 200) {
         final data = response['data'];
         return UserProfile.fromJson(data);
       } else {
         throw Exception('Failed to load user profile');
+      }
+    });
+  }
+
+  @override
+  Future<UserProfile> getUserProfileByUsername(String username) async {
+    return apiClient
+        .get('/usernameinformation/$username')
+        .then((response) {
+      if (response['status'] == 200) {
+        final data = response['data'];
+        return UserProfile.fromJson(data);
+      } else {
+        throw Exception('Failed to load user profile by username');
       }
     });
   }

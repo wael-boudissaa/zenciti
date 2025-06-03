@@ -12,6 +12,7 @@ class ProfileInformationBloc extends Bloc<SignUpEvent, SignUpState> {
 
   ProfileInformationBloc(this.registerUseCase) : super(SignUpInitial()) {
     on<GetProfileData>(_onGetProfileData);
+    on<GetUsernameData>(_onGetUsernameData);
   }
 
   Future<void> _onGetProfileData(
@@ -23,6 +24,29 @@ class ProfileInformationBloc extends Bloc<SignUpEvent, SignUpState> {
     try {
       // Call the use case to get user profile data
       final userProfile = await registerUseCase.getUserProfile(event.idClient);
+
+      // Emit success state with user profile data
+      emit(ProfileInformationSuccess(userProfile));
+    } catch (e) {
+      // Emit failure state with error message
+      emit(SignUpFailure(e.toString()));
+      throw e; // Rethrow the error for further handling if needed
+    } catch (e) {
+      emit(SignUpFailure(
+          'An unexpected error occurred: ${e.toString()}')); // Emit failure state with error message
+    }
+  }
+
+  Future<void> _onGetUsernameData(
+    GetUsernameData event,
+    Emitter<SignUpState> emit,
+  ) async {
+    emit(SignUpLoading());
+
+    try {
+      // Call the use case to get user profile data
+      final userProfile =
+          await registerUseCase.getUserProfileByUsername(event.username);
 
       // Emit success state with user profile data
       emit(ProfileInformationSuccess(userProfile));

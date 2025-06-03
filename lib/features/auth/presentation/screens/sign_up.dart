@@ -43,7 +43,15 @@ class _SignUpState extends State<SignUp> {
                 listener: (context, state) {
                   if (state is SignUpSuccess) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Sign up successful!')),
+                      SnackBar(
+                        content: const Text("Registration successful!"),
+                        action: SnackBarAction(
+                          label: 'Login',
+                          onPressed: () {
+                            context.go('/');
+                          },
+                        ),
+                      ),
                     );
                   } else if (state is SignUpFailure) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -153,10 +161,9 @@ class _SignUpState extends State<SignUp> {
                                         password: textPassword.text,
                                         username: textUsername.text,
                                         phone: textPhone.text,
-
                                       ),
                                     );
-                                context.go('/');
+                                // context.go('/');
                               },
                               textstring: "S'inscrire",
                             ),

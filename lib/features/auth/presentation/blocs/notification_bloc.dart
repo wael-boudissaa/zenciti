@@ -9,25 +9,37 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
 
   NotificationBloc(this.friendRequestUseCase) : super(NotificationInitial()) {
     on<NotificationGet>(_onNotificationGet);
+    on<AcceptRequest>(_onAcceptRequest);
   }
 
   Future<void> _onNotificationGet(
     NotificationGet event,
     Emitter<NotificationState> emit,
   ) async {
-    emit(NotificationLoading()); 
+    emit(NotificationLoading());
 
     try {
       final friendRequestList =
           await friendRequestUseCase.execute(event.idClient);
-      emit(NotificationSucces(
-          friendRequestList)); 
+      emit(NotificationSucces(friendRequestList));
     } catch (e) {
-      emit(NotificationFailure(
-          e.toString())); 
+      emit(NotificationFailure(e.toString()));
     } catch (e) {
       emit(NotificationFailure(
           'An unexpected error occurred: ${e.toString()}')); // Emit failure state with error message
+    }
+  }
+
+  Future<void> _onAcceptRequest(
+    AcceptRequest event,
+    Emitter<NotificationState> emit,
+  ) async {
+    try {
+      await friendRequestUseCase.executeAccept(event.idFriendship);
+      emit(AcceptRequestState('Friend request accepted successfully'));
+    } catch (e) {
+      emit(NotificationFailure(
+          'Failed to accept friend request: ${e.toString()}'));
     }
   }
 }

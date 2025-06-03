@@ -389,6 +389,10 @@ class _FriendRequestCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24)),
                 ),
                 onPressed: () {
+                  context
+                      .read<NotificationBloc>()
+                      .add(AcceptRequest(request.idFriendship));
+
                   // Accept friend request logic
                 },
                 child: const Text("Accept", style: TextStyle(fontSize: 13)),

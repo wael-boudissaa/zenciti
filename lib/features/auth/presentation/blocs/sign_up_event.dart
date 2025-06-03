@@ -21,6 +21,11 @@ class GetProfileData extends SignUpEvent {
 
   const GetProfileData(this.idClient);
 }
+class GetUsernameData extends SignUpEvent {
+  final String username;
+
+  const GetUsernameData(this.username);
+}
 
 class SignUpFirstNameChanged extends SignUpEvent {
   final String firstName;
