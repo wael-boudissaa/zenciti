@@ -8,4 +8,5 @@ abstract class ActivityRepo {
   Future<List<Activity>> getActivitiesByType(String activityType);
   Future<List<Activity>> getActivitiesByPopularity();
   Future<Activity> getActivityById(String activityId);
+  Future<List<ActivityProfile>> getActivityRecent(idCient);
 }

@@ -43,7 +43,7 @@ class ActivityTypeBloc extends Bloc<ActivityEvent, ActivityState> {
       ));
     } catch (e, stackTrace) {
       // Log the error for debugging
-      log("Error fetching activities", error: e, stackTrace: stackTrace);
+      log("Error fetching Type of activities", error: e, stackTrace: stackTrace);
 
       // Emit failure state with error message
       emit(ActivityFailure(e.toString()));

@@ -21,3 +21,9 @@ class GetActivityById extends ActivityEvent {
 }
 
 class ActivityTypeGet extends ActivityEvent {}
+
+class ActivityRecentGet extends ActivityEvent {
+  final String idClient;
+
+  ActivityRecentGet(this.idClient);
+}

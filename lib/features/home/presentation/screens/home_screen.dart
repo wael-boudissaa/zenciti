@@ -5,6 +5,9 @@ import 'package:zenciti/core/utils/api_client.dart';
 import 'package:zenciti/features/activity/data/repositories/activite_type_repo.dart';
 import 'package:zenciti/features/activity/domain/usecase/activity_popularity.dart';
 import 'package:zenciti/features/activity/domain/usecase/ativity_type_use_case.dart';
+import 'package:zenciti/features/activity/domain/usecase/ativity_use_case.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_bloc.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_populaire_dart.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
@@ -68,13 +71,27 @@ class _HomePageState extends State<HomePage> {
           }
           // Pass idClient to ProfilePage
           final idClient = snapshot.data!;
-          return BlocProvider<ProfileInformationBloc>(
-            create: (context) => ProfileInformationBloc(
-              RegisterUseCase(
-                AuthRepositoryImpl(
-                    apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080")),
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<ProfileInformationBloc>(
+                create: (context) => ProfileInformationBloc(
+                  RegisterUseCase(
+                    AuthRepositoryImpl(
+                        apiClient:
+                            ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                  ),
+                )..add(GetProfileData(idClient)),
               ),
-            )..add(GetProfileData(idClient)),
+              BlocProvider<ActivityBloc>(
+                create: (context) => ActivityBloc(
+                  ActivityUseCase(
+                    ActiviteTypeRepoImp(
+                        apiClient:
+                            ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                  ),
+                )..add(ActivityRecentGet(idClient)),
+              ),
+            ],
             child: ProfilePage(idClient: idClient),
           );
         },
@@ -97,4 +114,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

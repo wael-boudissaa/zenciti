@@ -29,7 +29,7 @@ class ActiviteTypeRepoImp implements ActivityRepo {
   @override
   Future<List<TypeActivity>> getTypeActivities() async {
     try {
-      final response = await apiClient.get('/activite/type');
+      final response = await apiClient.get('/activity/type');
 
       final List<dynamic> data = response['data'];
 
@@ -45,7 +45,7 @@ class ActiviteTypeRepoImp implements ActivityRepo {
   @override
   Future<List<Activity>> getActivitiesByType(String activityType) async {
     try {
-      final response = await apiClient.get('/activite/type/$activityType');
+      final response = await apiClient.get('/activity/type/$activityType');
       final List<dynamic> data = response['data'];
 
       log('Response: $data');
@@ -60,7 +60,7 @@ class ActiviteTypeRepoImp implements ActivityRepo {
   @override
   Future<List<Activity>> getActivitiesByPopularity() async {
     try {
-      final response = await apiClient.get('/activite/populaire');
+      final response = await apiClient.get('/activity/populaire');
       final List<dynamic> data = response['data'];
 
       log('Response: $data');
@@ -73,9 +73,8 @@ class ActiviteTypeRepoImp implements ActivityRepo {
 
   @override
   Future<Activity> getActivityById(String activityId) async {
-
     try {
-      final response = await apiClient.get('/activite/single/$activityId');
+      final response = await apiClient.get('/activity/single/$activityId');
       final data = response['data'];
 
       log('Response: $data');
@@ -83,6 +82,20 @@ class ActiviteTypeRepoImp implements ActivityRepo {
       return activity;
     } catch (e) {
       throw Exception('Failed to load activity by ID');
+    }
+  }
+
+  @override
+  Future<List<ActivityProfile>> getActivityRecent(idCient) async {
+    try {
+      final response = await apiClient.get('/activity/recent/$idCient');
+      final List<dynamic> data = await response['data'];
+
+      final activities =
+          data.map((json) => ActivityProfile.fromJson(json)).toList();
+      return activities;
+    } catch (e) {
+      throw Exception('Failed to load recent activities');
     }
   }
 }

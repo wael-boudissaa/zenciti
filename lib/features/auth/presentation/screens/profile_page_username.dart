@@ -199,8 +199,7 @@ class ProfilePageUsername extends StatelessWidget {
                             name: user.firstName,
                             date: "12/10/2024",
                             place: "Magic pool",
-                            people: 2,
-                            rating: 4.5,
+                            popularity: 30,
                             imageUrl:
                                 "https://storage.googleapis.com/uxpilot-auth.appspot.com/d2ebc99ea8-f972031e431f9fd3841c.png",
                           ),
@@ -208,8 +207,7 @@ class ProfilePageUsername extends StatelessWidget {
                             name: user.firstName,
                             date: "12/10/2024",
                             place: "Magic pool",
-                            people: 2,
-                            rating: 4.5,
+                            popularity: 20,
                             imageUrl:
                                 "https://storage.googleapis.com/uxpilot-auth.appspot.com/d2ebc99ea8-f972031e431f9fd3841c.png",
                           ),

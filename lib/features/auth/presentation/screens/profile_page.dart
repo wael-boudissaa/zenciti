@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/app/config/theme.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
 import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
-import 'package:zenciti/features/auth/presentation/blocs/profile_information_bloc.dart'; // For SignUpState, ProfileInformationSuccess, etc.
+import 'package:zenciti/features/auth/presentation/blocs/profile_information_bloc.dart';
+import 'package:zenciti/features/activity/presentation/blocs/activity_bloc.dart'; // Import your ActivityBloc/ActivityRecentBloc
+import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart';
 
 class ProfilePage extends StatelessWidget {
   final String idClient;
@@ -14,6 +17,12 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     const accent = AppColors.primary;
     const primary = AppColors.primary;
+
+    // Dispatch the recent activities fetch event on build (or use initState in StatefulWidget)
+    // Here we use BlocProvider.of to avoid multiple dispatches
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ActivityBloc>().add(ActivityRecentGet(idClient));
+    });
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -164,7 +173,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 22),
-                    // Last Activities Section
+                    // Last Activities Section (BlocBuilder for recent activities)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
@@ -176,39 +185,59 @@ class ProfilePage extends StatelessWidget {
                                 fontSize: 17, fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 14),
-                          // You can fetch activities dynamically here if needed
-                          ActivityCard(
-                            name: user.firstName,
-                            date: "12/10/2024",
-                            place: "Magic pool",
-                            people: 2,
-                            rating: 4.5,
-                            imageUrl:
-                                "https://storage.googleapis.com/uxpilot-auth.appspot.com/d2ebc99ea8-f972031e431f9fd3841c.png",
-                          ),
-                          ActivityCard(
-                            name: user.firstName,
-                            date: "12/10/2024",
-                            place: "Magic pool",
-                            people: 2,
-                            rating: 4.5,
-                            imageUrl:
-                                "https://storage.googleapis.com/uxpilot-auth.appspot.com/d2ebc99ea8-f972031e431f9fd3841c.png",
-                          ),
-                          const SizedBox(height: 6),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: accent,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              textStyle: const TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 15),
-                              minimumSize: const Size.fromHeight(0),
-                            ),
-                            child: const Text("View more"),
+                          BlocBuilder<ActivityBloc, ActivityState>(
+                            builder: (context, activityState) {
+                              if (activityState is ActivityLoading) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
+                              if (activityState is ActivityFailure) {
+                                return Center(child: Text(activityState.error));
+                              }
+                              if (activityState is ActivitySuccess) {
+                                if (activityState.activities.isEmpty) {
+                                  return const Center(
+                                      child: Text("No recent activities."));
+                                }
+                                return Column(
+                                  children: [
+                                    for (final activity
+                                        in activityState.activities)
+                                      ActivityCard(
+                                        name: activity.nameActivity,
+                                        date: activity.timeActivity != null
+                                            ? activity.timeActivity
+                                                .toString()
+                                                .split(' ')[0]
+                                            : "",
+                                        place: activity.descriptionActivity ??
+                                            "No place info",
+                                        popularity: activity.popularity,
+                                        imageUrl: activity.imageActivity ?? "",
+                                      ),
+                                    const SizedBox(height: 6),
+                                    ElevatedButton(
+                                      onPressed: () {},
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: accent,
+                                        foregroundColor: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 15),
+                                        textStyle: const TextStyle(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 15),
+                                        minimumSize: const Size.fromHeight(0),
+                                      ),
+                                      child: const Text("View more"),
+                                    ),
+                                  ],
+                                );
+                              }
+                              return const SizedBox();
+                            },
                           ),
                         ],
                       ),
@@ -239,7 +268,6 @@ class ProfilePage extends StatelessWidget {
               return const Center(child: Text("No profile data"));
             },
           ),
-          // Bottom Navigation can be added here if needed
         ],
       ),
     );
@@ -268,16 +296,14 @@ class ActivityCard extends StatelessWidget {
   final String name;
   final String date;
   final String place;
-  final int people;
-  final double rating;
+  final int popularity;
   final String imageUrl;
 
   const ActivityCard({
     required this.name,
     required this.date,
     required this.place,
-    required this.people,
-    required this.rating,
+    required this.popularity,
     required this.imageUrl,
     super.key,
   });
@@ -321,7 +347,7 @@ class ActivityCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
               child: Text(
-                "$name on $date took a reservation to the $place for $people people and he rated the place $rating",
+                "$name on $date at $place (Popularity: $popularity)",
                 style: const TextStyle(fontSize: 14),
               ),
             ),

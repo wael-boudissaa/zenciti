@@ -12,6 +12,9 @@ class ActivityUseCase {
     return await _repository.getActivitiesByType(id);
 
   }
+  Future<List<ActivityProfile>> executeRecent(String idClient) async {
+    return await _repository.getActivityRecent(idClient);
+  }
 
 }
 

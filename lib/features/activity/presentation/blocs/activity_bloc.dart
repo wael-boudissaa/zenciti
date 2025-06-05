@@ -11,6 +11,7 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
 
   ActivityBloc(this.activityUseCase) : super(ActivityInitials()) {
     on<ActivityGet>(_onActivityGetByType);
+    on<ActivityRecentGet>(_onActivityRecentGet);
   }
 
   Future<void> _onActivityGetByType(
@@ -41,6 +42,36 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
       ));
     } catch (e, stackTrace) {
       log("Error fetching activities", error: e, stackTrace: stackTrace);
+      emit(ActivityFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onActivityRecentGet(
+    ActivityRecentGet event,
+    Emitter<ActivityState> emit,
+  ) async {
+    emit(ActivityLoading());
+
+    try {
+      final activities = await activityUseCase.executeRecent(event.idClient);
+
+      log("Fetched Recent Activities: $activities");
+
+      // Emit success state with the fetched activities
+      emit(ActivitySuccess(
+        activities
+            .map((activity) => ActivityProfile(
+                  idActivity: activity.idActivity,
+                  nameActivity: activity.nameActivity,
+                  descriptionActivity: activity.descriptionActivity,
+                  imageActivity: activity.imageActivity,
+                  popularity: activity.popularity,
+                  timeActivity: activity.timeActivity,
+                ))
+            .toList(),
+      ));
+    } catch (e, stackTrace) {
+      log("Error fetching recent activities", error: e, stackTrace: stackTrace);
       emit(ActivityFailure(e.toString()));
     }
   }
