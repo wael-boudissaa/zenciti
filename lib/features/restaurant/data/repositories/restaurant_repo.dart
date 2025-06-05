@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:zenciti/core/utils/api_client.dart';
 import 'package:zenciti/features/restaurant/domain/entities/menu.dart';
+import 'package:zenciti/features/restaurant/domain/entities/reviews.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
 
@@ -139,6 +140,54 @@ class RestaurantRepoImpl implements RestaurantRepo {
     } catch (e) {
       print('Error creating reservation: $e');
       throw Exception('Failed to create reservation');
+    }
+  }
+
+  @override
+  Future<String> ratingRestaurant(
+      String idRestaurant, String idClient, int rating, String comment) async {
+    try {
+      final fullUrl = '/restaurant/rating';
+      print('POST → $fullUrl');
+      final body = {
+        'idRestaurant': idRestaurant,
+        'idClient': idClient,
+        'rating': rating,
+        'comment': comment,
+      };
+      final response = await apiClient.post(fullUrl, body);
+      log('Raw response from /restaurant/rating → $response');
+      final data = response['data']['message'];
+      if (data != null && data is String) {
+        return data;
+      } else {
+        throw Exception('Invalid response format');
+      }
+    } catch (e) {
+      print('Error rating restaurant: $e');
+      throw Exception('Failed to rate restaurant');
+    }
+  }
+
+  @override
+  Future<List<ReviewProfile>> getFriendsReviews(
+      String idRestaurant, String idClient) async {
+    try {
+      final fullUrl = '/friends/reviews';
+      print('GET → $fullUrl');
+      final body = {
+        'idRestaurant': idRestaurant,
+        'idClient': idClient,
+      };
+      final response = await apiClient.post(fullUrl, body);
+      log('Raw response from /friends/reviews → $response');
+      final List<dynamic> data = response['data'];
+      log('Response: $data');
+      final reviews = data.map((json) => ReviewProfile.fromJson(json)).toList();
+      return reviews;
+    } catch (e) {
+      print('Error fetching friends reviews: $e');
+      throw Exception('Failed to load friends reviews');
     }
   }
 }

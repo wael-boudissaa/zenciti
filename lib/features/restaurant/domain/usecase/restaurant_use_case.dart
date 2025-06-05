@@ -1,6 +1,7 @@
 // domain/use_cases/login_use_case.dart
 
 import 'package:zenciti/features/restaurant/domain/entities/menu.dart';
+import 'package:zenciti/features/restaurant/domain/entities/reviews.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
 
@@ -25,13 +26,20 @@ class RestaurantUseCase {
     _repository.OrderFood(idReservation, food);
   }
 
-  Future<String> createReservation(
-      String idClient,
-      String idRestaurant,
-      String idTable,
-      DateTime timeFrom,
-      int numberOfPeople) async {
+  Future<String> createReservation(String idClient, String idRestaurant,
+      String idTable, DateTime timeFrom, int numberOfPeople) async {
     return await _repository.createReservation(
-        idClient, idRestaurant, idTable, timeFrom,  numberOfPeople);
+        idClient, idRestaurant, idTable, timeFrom, numberOfPeople);
+  }
+
+  Future<String> ratingRestaurant(
+      String idRestaurant, idClient, comment, int rating) async {
+    return await _repository.ratingRestaurant(
+        idRestaurant, idClient, rating, comment);
+  }
+
+  Future<List<ReviewProfile>> getFriendsReviews(
+      String idRestaurant, String idClient) async {
+    return await _repository.getFriendsReviews(idRestaurant, idClient);
   }
 }

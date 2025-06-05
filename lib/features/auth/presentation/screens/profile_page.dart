@@ -134,41 +134,6 @@ class ProfilePage extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           // Actions
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: accent,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 11),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(22),
-                                  ),
-                                  textStyle: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                onPressed: () {},
-                                icon: const FaIcon(FontAwesomeIcons.userPlus,
-                                    size: 16),
-                                label: const Text("Follow"),
-                              ),
-                              const SizedBox(width: 10),
-                              Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey[300]!),
-                                  borderRadius: BorderRadius.circular(22),
-                                ),
-                                child: IconButton(
-                                  icon: const FaIcon(FontAwesomeIcons.userGroup,
-                                      color: Colors.grey, size: 19),
-                                  onPressed: () {},
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),

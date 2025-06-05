@@ -5,6 +5,8 @@ import 'package:zenciti/app/config/theme.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_populaire_dart.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
+import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:zenciti/features/auth/presentation/blocs/login_event.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 import 'package:zenciti/features/home/presentation/widgets/restaurant_card.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
@@ -21,38 +23,23 @@ class Home_Page extends StatefulWidget {
 
 class _Home_PageState extends State<Home_Page> {
   final TextEditingController _searchController = TextEditingController();
-  List<String> _usernames = [
-    // Demo usernames, you should fetch this from your API or global state
-    "wael_boudissa",
-    "tasnime",
-    "alex_johnson",
-    "sarah_miller",
-    "michael_chen",
-    "lelekkele",
-    "jsjwj",
-  ];
-  List<String> _filteredUsernames = [];
+  String _lastSearchPrefix = '';
 
   @override
   void initState() {
     super.initState();
     context.read<ActivityTypeBloc>().add(ActivityTypeGet());
     context.read<RestaurantBloc>().add(RestaurantGetAll());
-    _filteredUsernames = _usernames;
     _searchController.addListener(_onSearchChanged);
   }
 
   void _onSearchChanged() {
-    final input = _searchController.text.trim().toLowerCase();
-    setState(() {
-      if (input.isEmpty) {
-        _filteredUsernames = _usernames;
-      } else {
-        _filteredUsernames = _usernames
-            .where((username) => username.toLowerCase().contains(input))
-            .toList();
-      }
-    });
+    final input = _searchController.text.trim();
+    if (input != _lastSearchPrefix) {
+      _lastSearchPrefix = input;
+      // Dispatch UsernamePrefixChanged event to LoginBloc
+      context.read<LoginBloc>().add(UsernamePrefixChanged(prefix: input));
+    }
   }
 
   @override
@@ -62,10 +49,7 @@ class _Home_PageState extends State<Home_Page> {
   }
 
   void _onUsernameTap(String username) {
-    // Here you should navigate to the user's profile page.
-    // For example, with go_router:
     context.push('/profile/$username', extra: username);
-    // If your profile page needs idClient, you can map from username to idClient or fetch it from the API.
   }
 
   @override
@@ -84,15 +68,6 @@ class _Home_PageState extends State<Home_Page> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Search for Usernames",
-                      style: TextStyle(
-                        color: AppColors.greenPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
                     TextField(
                       controller: _searchController,
                       decoration: InputDecoration(
@@ -108,37 +83,70 @@ class _Home_PageState extends State<Home_Page> {
                         ),
                       ),
                     ),
-                    if (_searchController.text.isNotEmpty)
-                      Container(
-                        constraints: const BoxConstraints(maxHeight: 180),
-                        margin: const EdgeInsets.only(top: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          border: Border.all(color: Colors.grey.shade200),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 7,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          itemCount: _filteredUsernames.length,
-                          separatorBuilder: (_, __) =>
-                              Divider(height: 0, color: Colors.grey[200]),
-                          itemBuilder: (context, index) {
-                            final username = _filteredUsernames[index];
-                            return ListTile(
-                              title: Text(username,
-                                  style: const TextStyle(fontSize: 16)),
-                              onTap: () => _onUsernameTap(username),
+                    BlocBuilder<LoginBloc, LoginState>(
+                      builder: (context, state) {
+                        if (_searchController.text.isEmpty) {
+                          return const SizedBox();
+                        }
+                        if (state is LoginLoading) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        if (state is UsernamePrefixSuccess) {
+                          final usernames = state.usernames;
+                          if (usernames.isEmpty) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
+                              child: Center(child: Text('No usernames found.')),
                             );
-                          },
-                        ),
-                      ),
+                          }
+                          return Container(
+                            constraints: const BoxConstraints(maxHeight: 180),
+                            margin: const EdgeInsets.only(top: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.grey.shade200),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 7,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: ListView.separated(
+                              shrinkWrap: true,
+                              itemCount: usernames.length,
+                              separatorBuilder: (_, __) =>
+                                  Divider(height: 0, color: Colors.grey[200]),
+                              itemBuilder: (context, index) {
+                                final username = usernames[index];
+                                return ListTile(
+                                  title: Text(username,
+                                      style: const TextStyle(fontSize: 16)),
+                                  onTap: () => _onUsernameTap(username),
+                                );
+                              },
+                            ),
+                          );
+                        }
+                        if (state is LoginFailure) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Center(
+                                child: Text(
+                              state.error,
+                              style: const TextStyle(color: Colors.red),
+                            )),
+                          );
+                        }
+                        // Default/fallback
+                        return const SizedBox();
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -272,4 +280,3 @@ class _Home_PageState extends State<Home_Page> {
     );
   }
 }
-

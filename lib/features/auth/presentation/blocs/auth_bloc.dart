@@ -1,4 +1,3 @@
-// features/auth/presentation/bloc/sign_up_bloc.dart
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
@@ -9,6 +8,7 @@ import 'sign_up_event.dart';
 part 'sign_up_state.dart';
 
 part 'login_state.dart';
+
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   final RegisterUseCase registerUseCase;
 
@@ -46,12 +46,12 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   }
 }
 
-
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUseCase loginUseCase;
 
   LoginBloc(this.loginUseCase) : super(LoginInitials()) {
     on<LoginSubmitted>(_onLoginSubmitted);
+    on<UsernamePrefixChanged>(_onGetUsernameByPrefix);
   }
 
   Future<void> _onLoginSubmitted(
@@ -77,5 +77,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginFailure(e.toString()));
     }
   }
-}
 
+  Future<void> _onGetUsernameByPrefix(
+      UsernamePrefixChanged event,
+    Emitter<LoginState> emit,
+
+  ) async {
+    emit(LoginLoading()); // Show loading state
+
+    try {
+      final usernames = await loginUseCase.getUsernameByPrefix(event.prefix);
+      emit(UsernamePrefixSuccess(usernames));
+    } catch (e) {
+      emit(LoginFailure(e.toString()));
+    }
+  }
+}

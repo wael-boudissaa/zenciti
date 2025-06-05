@@ -109,7 +109,6 @@ class AuthRepositoryImpl implements AuthRepo {
     }
   }
 
-
   @override
   Future<UserProfile> getUserProfile(String idClient) {
     return apiClient.get('/clientinformation/$idClient').then((response) {
@@ -130,6 +129,18 @@ class AuthRepositoryImpl implements AuthRepo {
         return UserProfile.fromJson(data);
       } else {
         throw Exception('Failed to load user profile by username');
+      }
+    });
+  }
+
+  @override
+  Future<List<String>> getUsernameByPrefix(String prefix) {
+    return apiClient.get('/username?prefix=$prefix').then((response) {
+      if (response['status'] == 200) {
+        final data = response['data']['usernames'];
+        return List<String>.from(data);
+      } else {
+        throw Exception('Failed to load usernames by prefix');
       }
     });
   }

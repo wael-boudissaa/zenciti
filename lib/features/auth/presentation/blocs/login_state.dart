@@ -14,3 +14,9 @@ class LoginFailure extends LoginState {
 
   LoginFailure(this.error);
 }
+class UsernamePrefixLoading extends LoginState {}
+class UsernamePrefixSuccess extends LoginState {
+  final List<String> usernames;
+
+  UsernamePrefixSuccess(this.usernames);
+}

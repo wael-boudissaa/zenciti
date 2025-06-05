@@ -68,7 +68,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       );
       // Call the use case
       await loginUseCase.execute(user);
-       emit(LoginSuccess);
+       emit(LoginSuccess());
 
     } catch (e) {
       // If an error occurs, emit LoginFailure

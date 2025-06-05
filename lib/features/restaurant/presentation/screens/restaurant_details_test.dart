@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:zenciti/features/home/presentation/widgets/appbar.dart';
 import 'package:zenciti/features/home/presentation/widgets/appbar_pages.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_bloc.dart';
+import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_bloc.dart';
+import 'package:zenciti/features/restaurant/presentation/screens/restaurant_rating.dart';
 
 class RestaurantDetailsPage extends StatefulWidget {
   const RestaurantDetailsPage({Key? key}) : super(key: key);
@@ -17,7 +19,50 @@ class RestaurantDetailsPage extends StatefulWidget {
 
 class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     with SingleTickerProviderStateMixin {
+  String? idClient;
   int tabIndex = 0;
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadIdClient();
+  }
+
+  Future<void> _loadIdClient() async {
+    final id = await storage.read(key: 'idClient');
+    if (mounted) {
+      setState(() {
+        idClient = id;
+      });
+    }
+  }
+
+  void _showRatingDialog(
+      BuildContext context, String idRestaurant, String idClient) async {
+    showDialog(
+      context: context,
+      builder: (ctx) => RestaurantRatingDialog(
+        onSubmit: (rating, comment) async {
+          context.read<ReviewsBloc>().add(RatingRestaurant(
+                idRestaurant: idRestaurant,
+                idClient: idClient,
+                rating: rating,
+                comment: comment,
+              ));
+          // Optionally refresh friends reviews after rating
+          context.read<ReviewsBloc>().add(GetFriendsReviews(
+                idRestaurant: idRestaurant,
+                idClient: idClient,
+              ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Thank you for your feedback!')),
+          );
+          context.pop(); // Close the dialog
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +73,33 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
       appBar: AppBarPages(),
       backgroundColor: Colors.white,
       body: BlocBuilder<RestaurantBloc, RestaurantState>(
-          builder: (context, state) {
-        if (state is RestaurantLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is RestaurantSingleSuccess) {
-          final r = state.restaurant as Restaurant;
+        builder: (context, restaurantState) {
+          if (restaurantState is RestaurantLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (restaurantState is RestaurantFailure) {
+            return Center(child: Text("Failed to load restaurant data"));
+          }
+
+          Restaurant? r;
+          if (restaurantState is RestaurantSingleSuccess) {
+            r = restaurantState.restaurant as Restaurant;
+          } else if (restaurantState is RestaurantSuccess) {
+            r = restaurantState.restaurant as Restaurant;
+          } else if (restaurantState is RatingSucces) {
+            // Optionally, you can handle rating success differently
+          }
+
+          if (r == null) {
+            // Defensive: Shouldn't happen, but just in case.
+            return const Center(child: CircularProgressIndicator());
+          }
+
           return Stack(
             children: [
               ListView(
                 padding: EdgeInsets.zero,
                 children: [
-                  // Header
-
                   // Restaurant Image
                   SizedBox(
                     height: 240,
@@ -51,7 +111,6 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                           Container(color: Colors.grey[200]),
                     ),
                   ),
-
                   // Details
                   Container(
                     color: Colors.white,
@@ -61,7 +120,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                       children: [
                         Text(
                           "${r.nameR}",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.w600, fontSize: 24),
                         ),
                         const SizedBox(height: 8),
@@ -72,7 +131,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                             const SizedBox(width: 8),
                             Text(
                               "${r.location}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.black87, fontSize: 15),
                             ),
                           ],
@@ -87,7 +146,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                   children: List.generate(
                                     5,
                                     (i) => Padding(
-                                      padding: const EdgeInsets.only(right: 2),
+                                      padding:
+                                          const EdgeInsets.only(right: 2),
                                       child: Icon(
                                         FontAwesomeIcons.solidStar,
                                         color: Colors.amber[400],
@@ -117,11 +177,11 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                               backgroundColor: primary,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 14),
                             ),
                             onPressed: () {
-                              context.push('/reservation',
-                                  extra: r);
+                              context.push('/reservation', extra: r);
                             },
                             child: const Text(
                               "Make Reservation",
@@ -135,7 +195,61 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                       ],
                     ),
                   ),
-
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 12),
+                    child: GestureDetector(
+                      onTap: () {
+                        if (idClient != null) {
+                          _showRatingDialog(
+                              context, r!.idRestaurant, idClient!);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  "Please log in to rate this restaurant."),
+                            ),
+                          );
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF9F9F6),
+                          borderRadius: BorderRadius.circular(13),
+                          border:
+                              Border.all(color: primary.withOpacity(0.10)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 6,
+                              offset: const Offset(0, 1),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 16),
+                        child: Row(
+                          children: [
+                            Icon(FontAwesomeIcons.solidStar,
+                                size: 28, color: Colors.amber[400]),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Text(
+                                "Share your experience! Tap to rate & review this restaurant.",
+                                style: TextStyle(
+                                  color: primary,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios,
+                                size: 18, color: Color(0xFF00614B)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   // Tab Navigation
                   Material(
                     color: Colors.white,
@@ -154,13 +268,64 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                       ),
                     ),
                   ),
-
-                  // Content
-                  if (tabIndex == 0) _buildReviewsSection(primary, accent)
-                  // Add Details or Menu tabs here if needed
-                  ,
-
-                  // Menu Button
+                  if (tabIndex == 0)
+                    BlocBuilder<ReviewsBloc, FriendsReviewState>(
+                      builder: (context, reviewState) {
+                        if (reviewState is FriendsReviewsLoading) {
+                          return const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 40),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        }
+                        if (reviewState is FriendsReviewsSuccess) {
+                          final reviews = reviewState.reviews;
+                          if (reviews == null || reviews.isEmpty) {
+                            return _noFriendsReviewsUI(primary);
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "${reviews.length} of your friends rated this restaurant",
+                                  style: const TextStyle(
+                                      color: Colors.black87,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16),
+                                ),
+                                const SizedBox(height: 18),
+                                ...reviews.map((review) => _reviewCard(
+                                      avatarUrl: _avatarForName(
+                                          review.firstName, review.lastName),
+                                      name:
+                                          "${review.firstName} ${review.lastName}",
+                                      rating: review.rating.toDouble(),
+                                      review: review.comment,
+                                      createdAt: review.createdAt,
+                                      accent: accent,
+                                      primary: primary,
+                                    )),
+                              ],
+                            ),
+                          );
+                        }
+                        if (reviewState is FriendsReviewsFailure) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 40),
+                            child: Center(
+                              child: Text(
+                                "Couldn't load your friends' reviews.",
+                                style: TextStyle(color: primary),
+                              ),
+                            ),
+                          );
+                        }
+                        // Fallback for other states
+                        return Container();
+                      },
+                    ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 14, 20, 90),
                     child: ElevatedButton.icon(
@@ -171,8 +336,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       onPressed: () {
-                      context.push('/restaurant/menu', extra: r.idRestaurant);
-
+                        context.push('/restaurant/menu',
+                            extra: r!.idRestaurant);
                       },
                       icon: const Icon(FontAwesomeIcons.utensils, size: 18),
                       label: const Text(
@@ -184,8 +349,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                   ),
                 ],
               ),
-
-              // Bottom nav
+              // Bottom nav unchanged
               Positioned(
                 left: 0,
                 right: 0,
@@ -197,7 +361,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                     decoration: const BoxDecoration(
                       color: Colors.white,
                       border: Border(
-                          top: BorderSide(color: Color(0xFFE5E7EB), width: 1)),
+                          top:
+                              BorderSide(color: Color(0xFFE5E7EB), width: 1)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -215,13 +380,8 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
               ),
             ],
           );
-        } else if (state is RestaurantFailure) {
-          return Center(child: Text("Failed to load restaurant data"));
-        } else {
-          // Default fallback to avoid returning null
-          return const Center(child: Text("Something went wrong"));
-        }
-      }),
+        },
+      ),
     );
   }
 
@@ -253,53 +413,34 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
         ),
       );
 
-  Widget _buildReviewsSection(Color primary, Color accent) {
+  Widget _noFriendsReviewsUI(Color primary) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "2 of your friends rated this restaurant",
-            style: TextStyle(
-                color: Colors.black87,
+      padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 20),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(FontAwesomeIcons.userFriends, color: primary, size: 48),
+            const SizedBox(height: 18),
+            Text(
+              "None of your friends have rated this restaurant yet.",
+              style: TextStyle(
+                color: primary,
                 fontWeight: FontWeight.w500,
-                fontSize: 16),
-          ),
-          const SizedBox(height: 18),
-          // Review 1
-          _reviewCard(
-            avatarUrl:
-                "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg",
-            name: "Indrit Alushani",
-            rating: 5,
-            review: "Take the chicken and thank me later",
-            accent: accent,
-            primary: primary,
-          ),
-          // Review 2
-          _reviewCard(
-            avatarUrl:
-                "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg",
-            name: "Alex Marino",
-            rating: 4.5,
-            review:
-                "Great seafood and amazing sunset views. The service was exceptional!",
-            accent: accent,
-            primary: primary,
-          ),
-          // Review 3
-          _reviewCard(
-            avatarUrl:
-                "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-5.jpg",
-            name: "Sarah Johnson",
-            rating: 5,
-            review:
-                "Perfect for special occasions. The wine selection is impressive!",
-            accent: accent,
-            primary: primary,
-          ),
-        ],
+                fontSize: 17,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Be the first among your friends to leave a review!",
+              style: TextStyle(
+                color: Colors.grey[700],
+                fontSize: 14,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -309,6 +450,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
     required String name,
     required double rating,
     required String review,
+    required DateTime createdAt,
     required Color accent,
     required Color primary,
   }) {
@@ -332,9 +474,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                     name,
                     style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: name == "Indrit Alushani"
-                            ? primary
-                            : Colors.black87,
+                        color: primary,
                         fontSize: 15),
                   ),
                 ],
@@ -354,7 +494,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
               )
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: 4),
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -363,9 +503,27 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                   color: Color(0xFF4B5563), fontSize: 14, height: 1.4),
             ),
           ),
+          const SizedBox(height: 4),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "${createdAt.day.toString().padLeft(2, '0')}/${createdAt.month.toString().padLeft(2, '0')}/${createdAt.year}",
+              style: TextStyle(
+                color: Colors.grey[500],
+                fontSize: 12,
+              ),
+            ),
+          ),
         ],
       ),
     );
+  }
+
+  // Generates a consistent avatar url for a friend based on their name
+  String _avatarForName(String firstName, String lastName) {
+    // For demo, you could use a static image or initials or a hash for random avatar
+    // Here we use ui-avatars.com for initials
+    return "https://ui-avatars.com/api/?name=$firstName+$lastName&background=E5E7EB&color=00614B&size=128";
   }
 
   Widget _bottomNavItem(

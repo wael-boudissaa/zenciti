@@ -78,3 +78,41 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
     }
   }
 }
+
+class ReviewsBloc extends Bloc<ReviewsEvent, FriendsReviewState> {
+  final RestaurantUseCase restaurantUseCase;
+
+  ReviewsBloc(this.restaurantUseCase) : super(ReviewsInitials()) {
+    on<RatingRestaurant>(_onRatingRestaurant);
+    on<GetFriendsReviews>(_onGetFriendsReviews);
+  }
+  Future<void> _onRatingRestaurant(
+      RatingRestaurant event, Emitter<FriendsReviewState> emit) async {
+    emit(FriendsReviewsLoading());
+    try {
+      final String response = await restaurantUseCase.ratingRestaurant(
+        event.idRestaurant,
+        event.idClient,
+        event.comment,
+        event.rating,
+      );
+      emit(RatingSucces(response));
+    } catch (e) {
+      emit(FriendsReviewsFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onGetFriendsReviews(
+      GetFriendsReviews event, Emitter<FriendsReviewState> emit) async {
+    emit(FriendsReviewsLoading());
+    try {
+      final reviews = await restaurantUseCase.getFriendsReviews(
+        event.idRestaurant,
+        event.idClient,
+      );
+      emit(FriendsReviewsSuccess(reviews));
+    } catch (e) {
+      emit(FriendsReviewsFailure(e.toString()));
+    }
+  }
+}

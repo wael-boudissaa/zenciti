@@ -8,6 +8,7 @@ import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:zenciti/features/auth/presentation/blocs/notification_bloc.dart';
 import 'package:zenciti/features/auth/presentation/blocs/profile_information_bloc.dart';
 import 'package:zenciti/features/auth/presentation/screens/profile_page.dart';
+import 'package:zenciti/features/home/presentation/widgets/appbar_pages.dart';
 
 class ProfilePageUsername extends StatelessWidget {
   final String username;
@@ -20,6 +21,7 @@ class ProfilePageUsername extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBarPages(),
       body: Stack(
         children: [
           BlocBuilder<ProfileInformationBloc, SignUpState>(

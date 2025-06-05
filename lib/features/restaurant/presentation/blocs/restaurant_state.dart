@@ -42,3 +42,31 @@ class ReservationSuccess<T> extends RestaurantState<T> {
 
   ReservationSuccess(this.message, this.reservationId);
 }
+
+abstract class FriendsReviewState<T> {}
+class FriendsReviewsSuccess<T> extends FriendsReviewState<T> {
+  final List<ReviewProfile> reviews;
+
+  FriendsReviewsSuccess(this.reviews);
+
+}
+
+class RatingSucces <T> extends FriendsReviewsSuccess<T> {
+  final String message;
+
+    RatingSucces(this.message) : super([]);
+}
+
+
+class ReviewsInitials<T> extends FriendsReviewState<T> {}
+class FriendsReviewsFailure<T> extends FriendsReviewState<T> {
+  final String error;
+
+  FriendsReviewsFailure(this.error);
+}
+
+class FriendsReviewsLoading<T> extends FriendsReviewState<T> {}
+
+// This file defines the various states for the Restaurant feature in a Flutter application.
+
+

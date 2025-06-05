@@ -60,3 +60,39 @@ class OrderFood extends RestaurantEvent {
     required this.food,
   });
 }
+
+
+
+abstract class ReviewsEvent extends Equatable {
+  const ReviewsEvent();
+
+  @override
+  List<Object> get props => [];
+
+}
+
+class RatingRestaurant extends ReviewsEvent {
+  final String idRestaurant;
+  final String idClient;
+  final int rating;
+  final String comment;
+
+  const RatingRestaurant({
+    required this.idRestaurant,
+    required this.idClient,
+    required this.rating,
+    required this.comment,
+  });
+
+}
+
+class GetFriendsReviews extends ReviewsEvent {
+  final String idRestaurant;
+  final String idClient;
+
+  const GetFriendsReviews({
+    required this.idRestaurant,
+    required this.idClient,
+  });
+}
+

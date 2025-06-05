@@ -11,4 +11,8 @@ class LoginUseCase {
   Future<void> execute(LoginUser user) async {
      await _repository.login(LoginUser(email: user.email, password: user.password));
   }
+
+  Future<List<String>> getUsernameByPrefix(String prefix) async {
+    return await _repository.getUsernameByPrefix(prefix);
+  }
 }

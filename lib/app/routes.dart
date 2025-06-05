@@ -20,22 +20,18 @@ import 'package:zenciti/features/auth/presentation/blocs/profile_information_blo
 import 'package:zenciti/features/auth/presentation/blocs/sign_up_event.dart';
 import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
 import 'package:zenciti/features/auth/presentation/screens/notification_page.dart';
-import 'package:zenciti/features/auth/presentation/screens/profile_page.dart';
 import 'package:zenciti/features/auth/presentation/screens/profile_page_username.dart';
 import 'package:zenciti/features/home/presentation/screens/home_screen.dart';
 import 'package:zenciti/features/restaurant/data/repositories/restaurant_repo.dart';
-import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_table_use_case.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_use_case.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_bloc.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_bloc.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/menu.dart';
-import 'package:zenciti/features/restaurant/presentation/screens/order.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/orderPage.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/reservation_test.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/reservation_QrCode.dart';
-import 'package:zenciti/features/restaurant/presentation/screens/restaurant_details.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurant_details_test.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurants.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/schema_restaurant.dart';
@@ -245,15 +241,48 @@ class AppRouter {
       GoRoute(
         path: '/home/restaurant/s/:restaurantId',
         builder: (context, state) {
-          return BlocProvider(
-            create: (context) => RestaurantBloc(
-              RestaurantUseCase(
-                RestaurantRepoImpl(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
-                ),
-              ),
-            )..add(RestaurantGetById(id: state.extra as String)),
-            child: RestaurantDetailsPage(),
+          final String restaurantId = state.extra as String;
+
+          return FutureBuilder<String?>(
+            future: getIdClient(), // Your async method to get the idClient
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              final idClient = snapshot.data!;
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                    create: (context) => RestaurantBloc(
+                      RestaurantUseCase(
+                        RestaurantRepoImpl(
+                          apiClient:
+                              ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                        ),
+                      ),
+                    )..add(RestaurantGetById(id: restaurantId)),
+                  ),
+                  BlocProvider(
+                    create: (context) {
+                      final bloc = ReviewsBloc(
+                        RestaurantUseCase(
+                          RestaurantRepoImpl(
+                            apiClient:
+                                ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                          ),
+                        ),
+                      );
+                      bloc.add(GetFriendsReviews(
+                        idRestaurant: restaurantId,
+                        idClient: idClient,
+                      ));
+                      return bloc;
+                    },
+                  ),
+                ],
+                child: RestaurantDetailsPage(),
+              );
+            },
           );
         },
       ),
