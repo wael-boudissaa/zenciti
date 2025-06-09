@@ -98,4 +98,39 @@ class ActiviteTypeRepoImp implements ActivityRepo {
       throw Exception('Failed to load recent activities');
     }
   }
+
+  @override
+  Future<void> createActivity(
+      String ActivityId, String idClient, DateTime TimeActivity) async {
+    try {
+      final response = await apiClient.post('/activity/create', {
+        'idActivity': ActivityId,
+        'idClient': idClient,
+        'timeActivity': TimeActivity.toIso8601String(),
+      });
+
+      if (response['status'] == 201) {
+        log('Activity created successfully');
+      } else {
+        throw Exception('Failed to create activity');
+      }
+    } catch (e) {
+      throw Exception('Failed to create activity: $e');
+    }
+  }
+
+  @override
+  Future<List<String>> getTimeNotAvaialble(
+      String idActivity, String day) async {
+    try {
+      final response = await apiClient.post(
+          '/activity/notAvailable', {'idActivity': idActivity, 'day': day});
+      final List<dynamic> data = response['data'];
+      log('Response: $data');
+      final unavailableTimes = data.map((json) => json.toString()).toList();
+      return unavailableTimes;
+    } catch (e) {
+      throw Exception('Failed to load unavailable times');
+    }
+  }
 }

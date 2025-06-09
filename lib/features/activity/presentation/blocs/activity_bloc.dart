@@ -12,6 +12,8 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
   ActivityBloc(this.activityUseCase) : super(ActivityInitials()) {
     on<ActivityGet>(_onActivityGetByType);
     on<ActivityRecentGet>(_onActivityRecentGet);
+    on<ActivityCreate>(_onActivityCreate);
+    on<GetTimeNotAvailable>(_onGetTimeNotAvailable);
   }
 
   Future<void> _onActivityGetByType(
@@ -75,4 +77,49 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
       emit(ActivityFailure(e.toString()));
     }
   }
+
+  Future<void> _onActivityCreate(
+    ActivityCreate event,
+    Emitter<ActivityState> emit,
+  ) async {
+    emit(ActivityLoading());
+
+    try {
+      await activityUseCase.createActivity(
+        event.activityId,
+        event.idClient,
+        event.timeActivity,
+      );
+
+      log("Activity Created: ${event.activityId}");
+
+      // Emit success state with a message
+      emit(ActivityCreatedSuccess("Activity created successfully"));
+    } catch (e, stackTrace) {
+      log("Error creating activity", error: e, stackTrace: stackTrace);
+      emit(ActivityFailure(e.toString()));
+    }
+  }
+    Future<void> _onGetTimeNotAvailable(
+        GetTimeNotAvailable event,
+        Emitter<ActivityState> emit,
+    ) async {
+        emit(ActivityLoading());
+    
+        try {
+        final listTimeNotAvailable = await activityUseCase.getTimeNotAvailable(
+            event.idActivity,
+            event.day,
+        );
+    
+        log("Fetched Time Not Available: $listTimeNotAvailable");
+    
+        // Emit success state with the list of time not available
+        emit(TimeSlotNotAvailable(listTimeNotAvailable));
+        } catch (e, stackTrace) {
+        log("Error fetching time not available", error: e, stackTrace: stackTrace);
+        emit(ActivityFailure(e.toString()));
+        }
+    }
 }
+

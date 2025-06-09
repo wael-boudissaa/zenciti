@@ -27,3 +27,18 @@ class ActivityRecentGet extends ActivityEvent {
 
   ActivityRecentGet(this.idClient);
 }
+
+class ActivityCreate extends ActivityEvent {
+  final String activityId;
+  final String idClient;
+  final DateTime timeActivity;
+
+  ActivityCreate(this.activityId, this.idClient, this.timeActivity);
+}
+
+class GetTimeNotAvailable extends ActivityEvent {
+  final String idActivity;
+  final String day;
+
+  GetTimeNotAvailable(this.idActivity, this.day);
+}

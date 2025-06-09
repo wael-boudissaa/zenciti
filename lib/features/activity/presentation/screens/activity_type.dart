@@ -58,15 +58,15 @@ class _ActivityTypeState extends State<ActivityType> {
                   return ListView.builder(
                     itemCount: activities.length,
                     itemBuilder: (context, index) {
-                      final activity = activities[index];
+                      final activity = activities[index] as Activity;
                       final imageUrl =
-                          activity.imageActivity?.trim().replaceAll('\n', '');
+                          activity.imageActivity.trim().replaceAll('\n', '');
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 8.0),
                         child: InkWell(
                           onTap: () {
-                            context.push("/activities/${activity.idActivity}");
+                            context.push("/activities/${activity.idActivity}",extra: {activity.idActivity});
                           },
                           child: Container(
                             decoration: BoxDecoration(

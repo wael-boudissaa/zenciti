@@ -17,3 +17,15 @@ class ActivityFailure<T> extends ActivityState<T> {
 
   ActivityFailure(this.error);
 }
+
+class ActivityCreatedSuccess<T> extends ActivityState<T> {
+  final String message;
+
+  ActivityCreatedSuccess(this.message);
+}
+
+class TimeSlotNotAvailable<T> extends ActivityState<T> {
+  final List<String> listTimeNotAvailable;
+
+  TimeSlotNotAvailable(this.listTimeNotAvailable);
+}

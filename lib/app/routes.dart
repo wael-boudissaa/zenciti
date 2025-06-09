@@ -10,6 +10,8 @@ import 'package:zenciti/features/activity/domain/usecase/ativity_use_case.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_single.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_details.dart';
+import 'package:zenciti/features/activity/presentation/screens/activity_res.dart';
+import 'package:zenciti/features/activity/presentation/screens/activity_reservation.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_type.dart';
 import 'package:zenciti/features/auth/data/repositories/auth_repositorie.dart';
 import 'package:zenciti/features/auth/data/repositories/notification_repositorie.dart';
@@ -47,7 +49,7 @@ Future<String?> getIdClient() async => await storage.read(key: 'idClient');
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: '/',
-    redirect: (context, state) async {
+    redirect: (ontext, state) async {
       // For GoRouter v6+, use state.uri.toString() or state.fullPath
       final String location = state.fullPath ?? state.uri.toString();
       final token = await getToken();
@@ -67,6 +69,10 @@ class AppRouter {
         path: '/',
         builder: (context, state) => const LoginScreen(),
       ),
+      // GoRoute(
+      //   path: '/reservation/wael',
+      //   builder: (context, state) => const CourtReservationPage(),
+      // ),
       GoRoute(
         path: '/profile/:username',
         builder: (context, state) {
@@ -325,16 +331,74 @@ class AppRouter {
       GoRoute(
         path: '/activities/:activityId',
         builder: (context, state) {
-          final activityId = state.pathParameters['activityId']!;
-          return BlocProvider<ActivitySingleBloc>(
-            create: (context) => ActivitySingleBloc(
-              ActivitySingleUseCase(
-                ActiviteTypeRepoImp(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+          final String activityId = state.pathParameters['activityId']!;
+          return FutureBuilder<String?>(
+            future: getIdClient(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+
+              if (!snapshot.hasData || snapshot.data == null) {
+                return const Center(child: Text('No client ID found'));
+              }
+
+              final idClient = snapshot.data!;
+
+              return BlocProvider<ActivitySingleBloc>(
+                create: (context) => ActivitySingleBloc(
+                  ActivitySingleUseCase(
+                    ActiviteTypeRepoImp(
+                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                    ),
+                  ),
+                )..add(GetActivityById(activityId)),
+                child: ActivityDetailsPage(),
+              );
+            },
+          );
+        },
+      ),
+      GoRoute(
+        path: '/activity/reservation',
+        builder: (context, state) {
+          final result = state.extra as Map<String, dynamic>;
+          final String activityId = result['activityId'] as String;
+          return FutureBuilder<String?>(
+            future: getIdClient(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+
+              if (!snapshot.hasData || snapshot.data == null) {
+                return const Center(child: Text('No client ID found'));
+              }
+
+              final idClient = snapshot.data!;
+
+              return BlocProvider<ActivityBloc>(
+                create: (context) => ActivityBloc(
+                  ActivityUseCase(
+                    ActiviteTypeRepoImp(
+                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                    ),
+                  ),
                 ),
-              ),
-            )..add(GetActivityById(activityId)),
-            child: ActivityDetailsPage(),
+                child: CourtReservationPage(
+                  activityId: activityId,
+                  clientId: idClient,
+                ),
+              );
+            },
           );
         },
       ),

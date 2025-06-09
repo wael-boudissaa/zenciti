@@ -11,10 +11,9 @@ class ActivityPopularityUseCase {
   Future<List<Activity>> execute() async {
     return await _repository.getActivitiesByPopularity();
   }
+
   Future<List<ActivityProfile>> executeRecent(String idClient) async {
     return await _repository.getActivityRecent(idClient);
   }
 
 }
-
-
