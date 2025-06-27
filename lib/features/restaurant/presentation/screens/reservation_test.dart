@@ -535,30 +535,6 @@ class _ReservationPageState extends State<ReservationPage> {
                   ),
                 ),
                 // Footer Nav
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Material(
-                    elevation: 16,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 14, horizontal: 20),
-                      color: Colors.white,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _footerNavItem(
-                              "Home", FontAwesomeIcons.home, true, primary),
-                          _footerNavItem("Activities", FontAwesomeIcons.bolt,
-                              false, primary),
-                          _footerNavItem(
-                              "Profile", FontAwesomeIcons.user, false, primary),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

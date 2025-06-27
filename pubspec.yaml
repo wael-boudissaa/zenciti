@@ -53,6 +53,7 @@ dependencies:
   forui_assets: ^0.10.0
   qr_flutter: ^4.1.0
   font_awesome_flutter: ^10.8.0
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.1
@@ -86,6 +87,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/.env
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

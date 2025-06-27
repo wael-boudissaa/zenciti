@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:zenciti/core/utils/api_client.dart';
 import 'package:zenciti/features/activity/data/repositories/activite_type_repo.dart';
@@ -33,8 +34,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   final FlutterSecureStorage storage = const FlutterSecureStorage();
+  static final String? apiUrl = dotenv.env['API_URL'];
 
   Future<String?> getIdClient() async => await storage.read(key: 'idClient');
+
+  static ApiClient buildApiClient() {
+    return ApiClient(baseUrl: apiUrl ?? "");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +50,17 @@ class _HomePageState extends State<HomePage> {
           BlocProvider<ActivityTypeBloc>(
             create: (context) => ActivityTypeBloc(
               ActivityTypeUseCase(
-                ActiviteTypeRepoImp(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
-                ),
+                ActiviteTypeRepoImp(apiClient: buildApiClient()),
               ),
             ),
           ),
           BlocProvider<RestaurantBloc>(
             create: (context) => RestaurantBloc(
               RestaurantUseCase(
-                RestaurantRepoImpl(
-                    apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                RestaurantRepoImpl(apiClient: buildApiClient()),
               ),
             ),
-          ),
+          )
         ],
         child: Home_Page(),
       ),
@@ -76,18 +79,14 @@ class _HomePageState extends State<HomePage> {
               BlocProvider<ProfileInformationBloc>(
                 create: (context) => ProfileInformationBloc(
                   RegisterUseCase(
-                    AuthRepositoryImpl(
-                        apiClient:
-                            ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                    AuthRepositoryImpl(apiClient: buildApiClient()),
                   ),
                 )..add(GetProfileData(idClient)),
               ),
               BlocProvider<ActivityBloc>(
                 create: (context) => ActivityBloc(
                   ActivityUseCase(
-                    ActiviteTypeRepoImp(
-                        apiClient:
-                            ApiClient(baseUrl: "http://192.168.1.41:8080")),
+                    ActiviteTypeRepoImp(apiClient: buildApiClient()),
                   ),
                 )..add(ActivityRecentGet(idClient)),
               ),

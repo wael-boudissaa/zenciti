@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zenciti/core/utils/api_client.dart';
 import 'package:zenciti/features/activity/data/repositories/activite_type_repo.dart';
@@ -41,24 +42,28 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../features/restaurant/domain/entities/tables.dart';
 
+// Secure storage helpers
 final FlutterSecureStorage storage = FlutterSecureStorage();
 
 Future<String?> getToken() async => await storage.read(key: 'token');
 Future<String?> getIdClient() async => await storage.read(key: 'idClient');
 
 class AppRouter {
+  static final String? apiUrl = dotenv.env['API_URL'];
+
+  static ApiClient buildApiClient() {
+    return ApiClient(baseUrl: apiUrl ?? "");
+  }
+
   static final GoRouter router = GoRouter(
     initialLocation: '/',
     redirect: (ontext, state) async {
-      // For GoRouter v6+, use state.uri.toString() or state.fullPath
       final String location = state.fullPath ?? state.uri.toString();
       final token = await getToken();
 
-      // If on login page and already authenticated, redirect to home
       if (location == '/' && token != null && token.isNotEmpty) {
         return '/home';
       }
-      // If not authenticated and trying to access a protected route, redirect to login
       if (location != '/' && (token == null || token.isEmpty)) {
         return '/';
       }
@@ -69,10 +74,6 @@ class AppRouter {
         path: '/',
         builder: (context, state) => const LoginScreen(),
       ),
-      // GoRoute(
-      //   path: '/reservation/wael',
-      //   builder: (context, state) => const CourtReservationPage(),
-      // ),
       GoRoute(
         path: '/profile/:username',
         builder: (context, state) {
@@ -83,7 +84,7 @@ class AppRouter {
                 create: (context) => ProfileInformationBloc(
                   RegisterUseCase(
                     AuthRepositoryImpl(
-                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                      apiClient: buildApiClient(),
                     ),
                   ),
                 )..add(GetUsernameData(username)),
@@ -92,7 +93,7 @@ class AppRouter {
                 create: (context) => NotificationBloc(
                   FriendRequestUseCase(
                     NotificationRepoImpl(
-                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                      apiClient: buildApiClient(),
                     ),
                   ),
                 ),
@@ -116,28 +117,15 @@ class AppRouter {
       GoRoute(
           path: '/notification',
           builder: (context, state) {
-            // if (extra is! Map<String, dynamic>) {
-            //   return Text('Invalid arguments passed to the Order page');
-            // }
-            //
-            // final String idRestaurant = extra['idRestaurant'] as String;
-            // final String idReservation = extra['reservationId'] as String;
-            //
-            // if (idRestaurant == null || idReservation == null) {
-            //   return Text('Invalid arguments passed to the Order page');
-            // }
-
             return FutureBuilder<String?>(
               future: getIdClient(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
                 if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
-
                 if (!snapshot.hasData || snapshot.data == null) {
                   return const Center(child: Text('No client ID found'));
                 }
@@ -148,8 +136,7 @@ class AppRouter {
                   create: (context) => NotificationBloc(
                     FriendRequestUseCase(
                       NotificationRepoImpl(
-                        apiClient:
-                            ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                        apiClient: buildApiClient(),
                       ),
                     ),
                   )..add(NotificationGet(idClient)),
@@ -177,7 +164,7 @@ class AppRouter {
             create: (context) => RestaurantBloc(
               RestaurantUseCase(
                 RestaurantRepoImpl(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                  apiClient: buildApiClient(),
                 ),
               ),
             )..add(MenuGetFood(idRestaurant: idRestaurant)),
@@ -192,7 +179,7 @@ class AppRouter {
             create: (context) => RestaurantBloc(
               RestaurantUseCase(
                 RestaurantRepoImpl(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                  apiClient: buildApiClient(),
                 ),
               ),
             ),
@@ -204,7 +191,6 @@ class AppRouter {
         path: '/reservation',
         builder: (context, state) {
           final Restaurant restaurant = state.extra as Restaurant;
-          // Use FutureBuilder to get idClient from secure storage
           return FutureBuilder<String?>(
             future: getIdClient(),
             builder: (context, snapshot) {
@@ -216,7 +202,7 @@ class AppRouter {
                 create: (context) => RestaurantBloc(
                   RestaurantUseCase(
                     RestaurantRepoImpl(
-                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                      apiClient: buildApiClient(),
                     ),
                   ),
                 ),
@@ -236,7 +222,7 @@ class AppRouter {
             create: (context) => RestaurantBloc(
               RestaurantUseCase(
                 RestaurantRepoImpl(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                  apiClient: buildApiClient(),
                 ),
               ),
             )..add(MenuGetFood(idRestaurant: state.extra as String)),
@@ -250,7 +236,7 @@ class AppRouter {
           final String restaurantId = state.extra as String;
 
           return FutureBuilder<String?>(
-            future: getIdClient(), // Your async method to get the idClient
+            future: getIdClient(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -262,8 +248,7 @@ class AppRouter {
                     create: (context) => RestaurantBloc(
                       RestaurantUseCase(
                         RestaurantRepoImpl(
-                          apiClient:
-                              ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                          apiClient: buildApiClient(),
                         ),
                       ),
                     )..add(RestaurantGetById(id: restaurantId)),
@@ -273,8 +258,7 @@ class AppRouter {
                       final bloc = ReviewsBloc(
                         RestaurantUseCase(
                           RestaurantRepoImpl(
-                            apiClient:
-                                ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                            apiClient: buildApiClient(),
                           ),
                         ),
                       );
@@ -303,7 +287,7 @@ class AppRouter {
             create: (context) => RestaurantTableBloc(
               RestaurantTablesUseCase(
                 RestaurantRepoImpl(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                  apiClient: buildApiClient(),
                 ),
               ),
             )..add(RestaurantTableGetAll(
@@ -320,7 +304,7 @@ class AppRouter {
             create: (context) => ActivityBloc(
               ActivityUseCase(
                 ActiviteTypeRepoImp(
-                  apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                  apiClient: buildApiClient(),
                 ),
               ),
             ),
@@ -353,7 +337,7 @@ class AppRouter {
                 create: (context) => ActivitySingleBloc(
                   ActivitySingleUseCase(
                     ActiviteTypeRepoImp(
-                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                      apiClient: buildApiClient(),
                     ),
                   ),
                 )..add(GetActivityById(activityId)),
@@ -389,7 +373,7 @@ class AppRouter {
                 create: (context) => ActivityBloc(
                   ActivityUseCase(
                     ActiviteTypeRepoImp(
-                      apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+                      apiClient: buildApiClient(),
                     ),
                   ),
                 ),

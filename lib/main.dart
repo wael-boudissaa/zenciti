@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:zenciti/app/routes.dart';
 import 'package:zenciti/core/utils/api_client.dart';
 // Auth feature
@@ -8,14 +9,27 @@ import 'package:zenciti/features/auth/domain/usecase/login_use_case.dart';
 import 'package:zenciti/features/auth/domain/usecase/register_use_case.dart';
 import 'package:zenciti/features/auth/presentation/blocs/auth_bloc.dart';
 
-// Activity feature
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-void main() {
+  try {
+    await dotenv.load(fileName: "assets/.env");
+  } catch (e) {
+    print("Failed to load .env file: $e");
+  }
+
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  static final String? apiUrl =
+      dotenv.env['API_URL'] ?? "https://localhost:8000";
+
   const MyApp({super.key});
+
+  static ApiClient buildApiClient() {
+    return ApiClient(baseUrl: apiUrl ?? "");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +37,7 @@ class MyApp extends StatelessWidget {
       providers: [
         RepositoryProvider<AuthRepositoryImpl>(
           create: (context) => AuthRepositoryImpl(
-            apiClient: ApiClient(baseUrl: "http://192.168.1.41:8080"),
+            apiClient: buildApiClient(),
           ),
         ),
       ],

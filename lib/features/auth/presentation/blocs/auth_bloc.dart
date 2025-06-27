@@ -37,7 +37,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       // Call the use case
       await registerUseCase.execute(user);
 
-      // If successful, emit SignUpSuccess
+      
       emit(SignUpSuccess());
     } catch (e) {
       // If an error occurs, emit SignUpFailure

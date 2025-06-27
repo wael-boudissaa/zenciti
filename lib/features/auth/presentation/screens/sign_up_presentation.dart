@@ -1,114 +1,275 @@
 import 'package:flutter/material.dart';
-import 'package:zenciti/app/config/theme.dart';
 import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
 import 'package:zenciti/features/auth/presentation/screens/sign_up.dart';
-import 'package:zenciti/features/auth/presentation/widgets/button_zenciti.dart';
-import 'package:zenciti/features/auth/presentation/widgets/button_zenciti_container.dart';
-import 'package:zenciti/features/auth/presentation/widgets/button_zenciti_white.dart';
-import 'package:zenciti/features/auth/presentation/widgets/divider.dart';
-import 'package:zenciti/features/auth/presentation/widgets/google_sign_in_button.dart';
 
-class SignUpPresentation extends StatefulWidget {
+class SignUpPresentation extends StatelessWidget {
   const SignUpPresentation({super.key});
-
-  @override
-  State<SignUpPresentation> createState() => _SignUpPresentationState();
-}
-
-class _SignUpPresentationState extends State<SignUpPresentation>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.all(17.0),
-          child: Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Explore Now",
-                  style: TextStyle(
-                    fontSize: 55,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // Header
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 40),
+                  const Text(
+                    "Explore now",
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                Text(
-                  "Join Zenciti Today",
-                  style: TextStyle(
-                    fontSize: 35,
-                fontWeight: FontWeight.w900,
-                    color: Colors.black,
+                  const SizedBox(height: 8),
+                  const Text(
+                    "Join Zenciti today.",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                // Add your widgets here
+                ],
+              ),
 
-                SizedBox(height: 30),
+              // Auth Buttons
+              Column(
+                children: [
+                  _SignUpButtonGoogle(),
+                  const SizedBox(height: 16),
+                  _SignUpButtonApple(),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Divider(thickness: 1, color: Color(0xFFD1D5DB)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          "or",
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ),
+                      const Expanded(
+                        child: Divider(thickness: 1, color: Color(0xFFD1D5DB)),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  _SignUpButtonCreateAccount(onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SignUp(),
+                      ),
+                    );
+                  }),
+                ],
+              ),
 
-                GoogleSignInButton(),
-                SizedBox(height: 30),
-
-                GoogleSignInButton(),
-
-                DividerOr(),
-
-                SizedBox(height: 50),
-                Center(
-                  child: ButtonZencitiContainer(
-                      textButton: "Create an account",
-                      onPressed: () {
+              // Footer
+              Column(
+                children: [
+                  const SizedBox(height: 8),
+                  Text(
+                    "Already have an account?",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[700],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(),
+                        ),
+                      );
+                    },
+                    child: InkWell(
+                      onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SignUp(),
+                            builder: (context) => LoginScreen(),
                           ),
                         );
-                      }),
-                ),
-
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    "Already have an account? Sign in",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.text,
+                      },
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFD1D5DB)),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            "Sign in",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xFF006E52),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Center(
-                    child: ButtonZencitiWhite(
-                        textButton: "Sign in",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => LoginScreen(),
-                            ),
-                          );
-                        })),
-              ],
-            ),
+                  const SizedBox(height: 24),
+                  Text.rich(
+                    TextSpan(
+                      text: "By signing up, you agree to the ",
+                      style: const TextStyle(
+                        color: Colors.grey,
+                        fontSize: 13,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "Terms of Service",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const TextSpan(text: " and "),
+                        TextSpan(
+                          text: "Privacy Policy",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const TextSpan(text: ", including "),
+                        TextSpan(
+                          text: "Cookie Use",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const TextSpan(text: "."),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+}
 
+// Google sign up button
+class _SignUpButtonGoogle extends StatelessWidget {
   @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this);
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: () {
+        // Implement Google sign up
+      },
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+        side: const BorderSide(color: Color(0xFFD1D5DB)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.network(
+            'https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_2013_Google.png',
+            width: 24,
+            height: 24,
+          ),
+          const SizedBox(width: 10),
+          const Text(
+            "Sign up with Google",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
+
+// Apple sign up button
+class _SignUpButtonApple extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      onPressed: () {
+        // Implement Apple sign up
+      },
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+        side: const BorderSide(color: Color(0xFFD1D5DB)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.apple, color: Colors.black, size: 24),
+          const SizedBox(width: 10),
+          const Text(
+            "Sign up with Apple",
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Create account button
+class _SignUpButtonCreateAccount extends StatelessWidget {
+  final VoidCallback onPressed;
+  const _SignUpButtonCreateAccount({required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialButton(
+      color: const Color(0xFF006E52),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      minWidth: double.infinity,
+      onPressed: onPressed,
+      child: const Text(
+        "Create account",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+

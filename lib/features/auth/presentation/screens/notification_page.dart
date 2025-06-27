@@ -245,7 +245,6 @@ class _NotificationPageState extends State<NotificationPage> {
         ),
       ),
       // Bottom Navigation
-      bottomNavigationBar: const _BottomNavBar(current: 2),
     );
   }
 }
@@ -479,87 +478,6 @@ class _NotificationListCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _BottomNavBar extends StatelessWidget {
-  final int current;
-  const _BottomNavBar({this.current = 0, super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    const Color primary = Color(0xFF00614B);
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFE5E7EB))),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 11, horizontal: 12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _FooterNavItem(
-            icon: FontAwesomeIcons.home,
-            label: "Home",
-            selected: current == 0,
-            color: current == 0 ? primary : Colors.grey[400]!,
-          ),
-          _FooterNavItem(
-            icon: FontAwesomeIcons.bolt,
-            label: "Activities",
-            selected: current == 1,
-            color: current == 1 ? primary : Colors.grey[400]!,
-          ),
-          _FooterNavItem(
-            icon: FontAwesomeIcons.user,
-            label: "Profile",
-            selected: current == 2,
-            color: current == 2 ? primary : Colors.grey[400]!,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _FooterNavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final Color color;
-
-  const _FooterNavItem({
-    Key? key,
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        FaIcon(icon, color: color, size: 22),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: TextStyle(
-            color: color,
-            fontSize: 12,
-            fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-          ),
-        )
-      ],
     );
   }
 }

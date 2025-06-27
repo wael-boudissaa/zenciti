@@ -34,6 +34,7 @@ class Activity {
   String descriptionActivity;
   String typeActivity;
   String imageActivity;
+  
   int popularity;
   Activity({
     required this.idActivity,

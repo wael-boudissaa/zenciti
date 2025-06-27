@@ -349,35 +349,6 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                   ),
                 ],
               ),
-              // Bottom nav unchanged
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Material(
-                  elevation: 16,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 9),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      border: Border(
-                          top:
-                              BorderSide(color: Color(0xFFE5E7EB), width: 1)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _bottomNavItem(
-                            "Home", FontAwesomeIcons.home, true, primary),
-                        _bottomNavItem("Activities", FontAwesomeIcons.bolt,
-                            false, primary),
-                        _bottomNavItem(
-                            "Profile", FontAwesomeIcons.user, false, primary),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
             ],
           );
         },

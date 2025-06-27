@@ -120,11 +120,15 @@ class RestaurantRepoImpl implements RestaurantRepo {
   }
 
   @override
-  Future<String> createReservation(String idClient, String idRestaurant,
-      String idTable, DateTime timeFrom, int numberOfPeople) async {
+  Future<String> createReservation(
+    String idClient,
+    String idRestaurant,
+    String idTable,
+    DateTime timeFrom,
+    int numberOfPeople,
+  ) async {
     try {
       final fullUrl = '/reservation';
-      print('POST → $fullUrl');
       final body = {
         'idClient': idClient,
         'idRestaurant': idRestaurant,
@@ -132,14 +136,16 @@ class RestaurantRepoImpl implements RestaurantRepo {
         'timeFrom': timeFrom.toIso8601String(),
         'numberOfPeople': numberOfPeople,
       };
+
       final response = await apiClient.post(fullUrl, body);
-      log('Raw response from /reservation/create → $response');
-      final data = response['data'];
-      log('Response: $data');
-      return data;
+      return response['data'];
     } catch (e) {
-      print('Error creating reservation: $e');
-      throw Exception('Failed to create reservation');
+      if (e is ApiException) {
+        throw Exception(
+            e.message); // 👈 This now returns your backend's "data" field
+      } else {
+        throw Exception('Unexpected error: $e');
+      }
     }
   }
 

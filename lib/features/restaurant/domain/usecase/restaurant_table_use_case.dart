@@ -8,10 +8,7 @@ class RestaurantTablesUseCase {
 
   RestaurantTablesUseCase(this._repository);
 
-  Future<List<RestaurantTable>> execute( String id,DateTime timeSlot) async {
-    return await _repository.getTableRestaurant(id,timeSlot);
-
+  Future<List<RestaurantTable>> execute(String id, DateTime timeSlot) async {
+    return await _repository.getTableRestaurant(id, timeSlot);
   }
-
 }
-
