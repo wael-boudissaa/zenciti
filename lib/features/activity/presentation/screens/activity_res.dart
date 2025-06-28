@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_bloc.dart';
@@ -172,9 +173,7 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
       }
 
       return GestureDetector(
-        onTap: isBooked
-            ? null
-            : () => setState(() => selectedTimeIndex = idx),
+        onTap: isBooked ? null : () => setState(() => selectedTimeIndex = idx),
         child: Container(
           decoration: BoxDecoration(
             color: isBooked
@@ -217,9 +216,9 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
         if (state is ActivityLoading) {
         } else if (state is ActivityCreatedSuccess) {
           MotionToast.success(
-            description: Text(state.message),
+            description: Text("Activity Created"),
           ).show(ctx);
-          Navigator.of(context).pop();
+          context.go('/reservation/qr', extra: state.idClientActivity);
         } else if (state is ActivityFailure) {
         } else if (state is TimeSlotNotAvailable) {
           setState(() {
@@ -237,11 +236,13 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                 children: [
                   Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 15),
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(FontAwesomeIcons.chevronLeft, size: 18, color: Color(0xFF1A2E35)),
+                          icon: const Icon(FontAwesomeIcons.chevronLeft,
+                              size: 18, color: Color(0xFF1A2E35)),
                           onPressed: () => Navigator.of(context).maybePop(),
                           tooltip: 'Back',
                         ),
@@ -255,13 +256,15 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                           ),
                         ),
                         const Spacer(),
-                        Icon(FontAwesomeIcons.solidCalendarDays, color: primary, size: 20),
+                        Icon(FontAwesomeIcons.solidCalendarDays,
+                            color: primary, size: 20),
                       ],
                     ),
                   ),
                   Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                     child: Row(
                       children: [
                         Container(
@@ -271,7 +274,8 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(12),
                             image: const DecorationImage(
-                              image: NetworkImage("https://storage.googleapis.com/uxpilot-auth.appspot.com/565b7f0879-be5b594d3b9b67e05e4a.png"),
+                              image: NetworkImage(
+                                  "https://storage.googleapis.com/uxpilot-auth.appspot.com/565b7f0879-be5b594d3b9b67e05e4a.png"),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -283,27 +287,42 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                             children: [
                               const Text(
                                 "Green Park Tennis",
-                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 17),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 17),
                               ),
                               const SizedBox(height: 4),
                               Row(
                                 children: [
-                                  const Icon(FontAwesomeIcons.mapMarkerAlt, size: 12, color: Color(0xFF00674B)),
+                                  const Icon(FontAwesomeIcons.mapMarkerAlt,
+                                      size: 12, color: Color(0xFF00674B)),
                                   const SizedBox(width: 6),
-                                  const Text("Downtown ZenCiti", style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                  const Text("Downtown ZenCiti",
+                                      style: TextStyle(
+                                          fontSize: 13, color: Colors.grey)),
                                 ],
                               ),
                               const SizedBox(height: 7),
                               Row(
                                 children: [
                                   Row(
-                                    children: List.generate(4, (index) => const Icon(Icons.star, color: Color(0xFFFFD700), size: 14)),
+                                    children: List.generate(
+                                        4,
+                                        (index) => const Icon(Icons.star,
+                                            color: Color(0xFFFFD700),
+                                            size: 14)),
                                   ),
-                                  const Icon(Icons.star_half, color: Color(0xFFFFD700), size: 14),
+                                  const Icon(Icons.star_half,
+                                      color: Color(0xFFFFD700), size: 14),
                                   const SizedBox(width: 8),
-                                  const Text("4.5", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 13)),
+                                  const Text("4.5",
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13)),
                                   const SizedBox(width: 4),
-                                  const Text("(48)", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                  const Text("(48)",
+                                      style: TextStyle(
+                                          fontSize: 12, color: Colors.grey)),
                                 ],
                               ),
                             ],
@@ -314,18 +333,24 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                   ),
                   Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 15),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("SELECT DATE", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.grey)),
+                        const Text("SELECT DATE",
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey)),
                         const SizedBox(height: 8),
                         SizedBox(
                           height: 90,
                           child: ListView.builder(
                             scrollDirection: Axis.horizontal,
                             itemCount: courtDates.length,
-                            itemBuilder: (context, idx) => buildDateItem(courtDates[idx], idx),
+                            itemBuilder: (context, idx) =>
+                                buildDateItem(courtDates[idx], idx),
                           ),
                         ),
                       ],
@@ -333,11 +358,16 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                   ),
                   Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 18),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("SELECT TIME", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.grey)),
+                        const Text("SELECT TIME",
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey)),
                         const SizedBox(height: 10),
                         Wrap(
                           spacing: 10,
@@ -373,7 +403,8 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                 bottom: 0,
                 child: Container(
                   color: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -383,7 +414,9 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text("Selected Time", style: TextStyle(color: Colors.grey, fontSize: 13)),
+                                const Text("Selected Time",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 13)),
                                 const SizedBox(height: 2),
                                 Text(getSelectedSummary(),
                                     style: const TextStyle(
@@ -397,8 +430,18 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                           RichText(
                             text: const TextSpan(
                               children: [
-                                TextSpan(text: "\$12", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Color(0xFF00674B))),
-                                TextSpan(text: "/hr", style: TextStyle(fontWeight: FontWeight.normal, fontSize: 13, color: Colors.grey)),
+                                TextSpan(
+                                    text: "\$12",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Color(0xFF00674B))),
+                                TextSpan(
+                                    text: "/hr",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 13,
+                                        color: Colors.grey)),
                               ],
                             ),
                           ),
@@ -408,9 +451,11 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primary,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
                           padding: const EdgeInsets.symmetric(vertical: 15),
-                          textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          textStyle: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
                           elevation: 1,
                         ),
                         onPressed: _submitReservation,
@@ -430,7 +475,11 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
   void _submitReservation() {
     final selectedDate = courtDates[selectedDateIndex];
     final timeSlot = timeSlots[selectedTimeIndex];
-    final timeParts = timeSlot.replaceAll(RegExp(r'\s+'), '').toUpperCase().replaceAll(RegExp(r'(AM|PM)'), '').split(':');
+    final timeParts = timeSlot
+        .replaceAll(RegExp(r'\s+'), '')
+        .toUpperCase()
+        .replaceAll(RegExp(r'(AM|PM)'), '')
+        .split(':');
     int hour = int.parse(timeParts[0]);
     int minute = int.parse(timeParts[1]);
     final isPM = timeSlot.toUpperCase().contains("PM") && hour != 12;
@@ -445,12 +494,12 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
     ).toUtc();
 
     context.read<ActivityBloc>().add(
-      ActivityCreate(
-        widget.activityId,
-        widget.clientId,
-        reservationDateTime,
-      ),
-    );
+          ActivityCreate(
+            widget.activityId,
+            widget.clientId,
+            reservationDateTime,
+          ),
+        );
   }
 
   IconData _getTimeIcon(String time) {
@@ -468,6 +517,9 @@ class _CourtReservationPageState extends State<CourtReservationPage> {
   }
 
   Widget _legendDot(Color color) {
-    return Container(width: 12, height: 12, decoration: BoxDecoration(color: color, shape: BoxShape.circle));
+    return Container(
+        width: 12,
+        height: 12,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle));
   }
 }

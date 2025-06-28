@@ -146,8 +146,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                                   children: List.generate(
                                     5,
                                     (i) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(right: 2),
+                                      padding: const EdgeInsets.only(right: 2),
                                       child: Icon(
                                         FontAwesomeIcons.solidStar,
                                         color: Colors.amber[400],
@@ -177,8 +176,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                               backgroundColor: primary,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12)),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
                             onPressed: () {
                               context.push('/reservation', extra: r);
@@ -216,8 +214,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                         decoration: BoxDecoration(
                           color: const Color(0xFFF9F9F6),
                           borderRadius: BorderRadius.circular(13),
-                          border:
-                              Border.all(color: primary.withOpacity(0.10)),
+                          border: Border.all(color: primary.withOpacity(0.10)),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.04),

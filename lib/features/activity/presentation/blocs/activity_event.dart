@@ -42,3 +42,8 @@ class GetTimeNotAvailable extends ActivityEvent {
 
   GetTimeNotAvailable(this.idActivity, this.day);
 }
+class CompleteActivity extends ActivityEvent {
+  final String idClientActivity;
+
+  CompleteActivity(this.idClientActivity);
+}

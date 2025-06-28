@@ -1,12 +1,8 @@
-// data/repositories/auth_repository_impl.dart
-// import 'package:zenciti/core/utils/token.dart';
 import 'dart:convert';
-
 import 'package:zenciti/core/utils/api_client.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
 import 'package:zenciti/features/auth/domain/repositories/auth_repo.dart';
 import '../../../../core/utils/token.dart';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final storage = FlutterSecureStorage();
@@ -14,7 +10,6 @@ final storage = FlutterSecureStorage();
 class AuthRepositoryImpl implements AuthRepo {
   final ApiClient apiClient;
 
-  // Define a constructor that accepts ApiClient
   AuthRepositoryImpl({required this.apiClient});
 
   @override
@@ -36,7 +31,7 @@ class AuthRepositoryImpl implements AuthRepo {
 
     if (response['status'] != 'success') {
       // throw Exception('Failed to register user');
-      print('succes');
+      print('success');
     } else {
       String refreshToken = response['token'];
       await saveTokens(refreshToken);
@@ -60,7 +55,8 @@ class AuthRepositoryImpl implements AuthRepo {
       final idClient = data['user']['idClient'] as String?;
       final userType = data['user']['type'] as String?;
       final username = data['user']['username'] as String?;
-
+      final String? idAdminActivity = data['idAdminActivity'] as String?;
+      final bool isAdminActivity = data['isAdminActivity'] as bool;
       await storage.write(key: 'token', value: token);
       if (refreshToken != null) {
         await storage.write(key: 'refreshToken', value: refreshToken);
@@ -76,72 +72,52 @@ class AuthRepositoryImpl implements AuthRepo {
       }
       if (username != null) {
         await storage.write(key: 'username', value: username);
-
-        // You can also parse and return a User entity if needed
-        return;
-      } else {
-        throw Exception('Failed to login: ${response['data']}');
       }
-    }
 
-    @override
-    Future<UserProfile> getUserProfile(String idClient) async {
-      return apiClient.get('/clientinformation/$idClient').then((response) {
-        if (response['status'] == 200) {
-          final data = response['data'];
-          return UserProfile.fromJson(data);
-        } else {
-          throw Exception('Failed to load user profile');
-        }
-      });
-    }
-
-    @override
-    Future<UserProfile> get(String username) async {
-      return apiClient.get('/usernameinformation/$username').then((response) {
-        if (response['status'] == 200) {
-          final data = response['data'];
-          return UserProfile.fromJson(data);
-        } else {
-          throw Exception('Failed to load user profile by username');
-        }
-      });
+      await storage.write(
+        key: 'isAdmin',
+        value: isAdminActivity ? 'true' : 'false',
+      );
+      if (idAdminActivity != null) {
+        await storage.write(key: 'idAdminActivity', value: idAdminActivity);
+      } // Success, return
+      return;
+    } else {
+      throw Exception('Failed to login: ${response['data']}');
     }
   }
 
   @override
-  Future<UserProfile> getUserProfile(String idClient) {
-    return apiClient.get('/clientinformation/$idClient').then((response) {
-      if (response['status'] == 200) {
-        final data = response['data'];
-        return UserProfile.fromJson(data);
-      } else {
-        throw Exception('Failed to load user profile');
-      }
-    });
+  Future<UserProfile> getUserProfile(String idClient) async {
+    final response = await apiClient.get('/clientinformation/$idClient');
+    if (response['status'] == 200) {
+      final data = response['data'];
+      return UserProfile.fromJson(data);
+    } else {
+      throw Exception('Failed to load user profile');
+    }
   }
 
   @override
-  Future<UserProfile> getUserProfileByUsername(String username) {
-    return apiClient.get('/usernameinformation/$username').then((response) {
-      if (response['status'] == 200) {
-        final data = response['data'];
-        return UserProfile.fromJson(data);
-      } else {
-        throw Exception('Failed to load user profile by username');
-      }
-    });
+  Future<UserProfile> getUserProfileByUsername(String username) async {
+    final response = await apiClient.get('/usernameinformation/$username');
+    if (response['status'] == 200) {
+      final data = response['data'];
+      return UserProfile.fromJson(data);
+    } else {
+      throw Exception('Failed to load user profile by username');
+    }
   }
 
   @override
-  Future<List<String>> getUsernameByPrefix(String prefix) {
-    return apiClient.get('/username?prefix=$prefix').then((response) {
-      if (response['status'] == 200) {
-        final data = response['data']['usernames'];
-        return List<String>.from(data);
-      } else {
-        throw Exception('Failed to load usernames by prefix');
-      }
-    });
+  Future<List<String>> getUsernameByPrefix(String prefix) async {
+    final response = await apiClient.get('/username?prefix=$prefix');
+    if (response['status'] == 200) {
+      final data = response['data']['usernames'];
+      return List<String>.from(data);
+    } else {
+      throw Exception('Failed to load usernames by prefix');
+    }
   }
 }
+

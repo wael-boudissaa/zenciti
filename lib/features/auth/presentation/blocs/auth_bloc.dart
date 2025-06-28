@@ -1,4 +1,3 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
 import 'package:zenciti/features/auth/domain/usecase/login_use_case.dart';
@@ -37,7 +36,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       // Call the use case
       await registerUseCase.execute(user);
 
-      
       emit(SignUpSuccess());
     } catch (e) {
       // If an error occurs, emit SignUpFailure
@@ -79,9 +77,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   Future<void> _onGetUsernameByPrefix(
-      UsernamePrefixChanged event,
+    UsernamePrefixChanged event,
     Emitter<LoginState> emit,
-
   ) async {
     emit(LoginLoading()); // Show loading state
 

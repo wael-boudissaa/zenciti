@@ -100,7 +100,7 @@ class ActiviteTypeRepoImp implements ActivityRepo {
   }
 
   @override
-  Future<void> createActivity(
+  Future<String> createActivity(
       String ActivityId, String idClient, DateTime TimeActivity) async {
     try {
       final response = await apiClient.post('/activity/create', {
@@ -110,7 +110,7 @@ class ActiviteTypeRepoImp implements ActivityRepo {
       });
 
       if (response['status'] == 201) {
-        log('Activity created successfully');
+        return response['data'].toString();
       } else {
         throw Exception('Failed to create activity');
       }
@@ -131,6 +131,23 @@ class ActiviteTypeRepoImp implements ActivityRepo {
       return unavailableTimes;
     } catch (e) {
       throw Exception('Failed to load unavailable times');
+    }
+  }
+
+  @override
+  Future<String> CompleteActivity(String idClientActivity) async {
+    try {
+      final response = await apiClient.post('/activity/complete', {
+        'idClientActivity': idClientActivity,
+      });
+
+      if (response['status'] == 200) {
+        return response['data']['message'] as String;
+      } else {
+        throw Exception('Failed to complete activity');
+      }
+    } catch (e) {
+      throw Exception('Failed to complete activity: $e');
     }
   }
 }

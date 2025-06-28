@@ -88,8 +88,8 @@ class _ActivityReservationState extends State<ActivityReservation> {
           MotionToast.success(
             description: Text("Reservation created successfully!"),
           ).show(ctx);
-          context.go('/reservation/wael', extra: {
-            "activityId": widget.activityId,
+          context.go('/reservation/qr', extra: {
+            "idReservation": state.idClientActivity,
           });
         } else if (state is ActivityFailure) {
           MotionToast.error(
@@ -342,4 +342,3 @@ class _HorizontalCalendar extends StatelessWidget {
 
 bool isSameDay(DateTime a, DateTime b) =>
     a.year == b.year && a.month == b.month && a.day == b.day;
-

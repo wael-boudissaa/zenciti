@@ -16,7 +16,7 @@ class ActivityUseCase {
     return await _repository.getActivityRecent(idClient);
   }
 
-  Future<void> createActivity(
+  Future<String> createActivity(
       String activityId, String idClient, DateTime timeActivity) async {
     return await _repository.createActivity(activityId, idClient, timeActivity);
   }
@@ -24,5 +24,9 @@ class ActivityUseCase {
   Future<List<String>> getTimeNotAvailable(
       String idActivity, String day) async {
     return await _repository.getTimeNotAvaialble(idActivity, day);
+  }
+
+  Future<String> completeActivity(String idClientActivity) async {
+    return await _repository.CompleteActivity(idClientActivity);
   }
 }

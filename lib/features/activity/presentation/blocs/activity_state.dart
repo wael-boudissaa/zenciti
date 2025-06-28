@@ -19,9 +19,9 @@ class ActivityFailure<T> extends ActivityState<T> {
 }
 
 class ActivityCreatedSuccess<T> extends ActivityState<T> {
-  final String message;
+  final String idClientActivity;
 
-  ActivityCreatedSuccess(this.message);
+  ActivityCreatedSuccess(this.idClientActivity);
 }
 
 class TimeSlotNotAvailable<T> extends ActivityState<T> {
@@ -29,3 +29,9 @@ class TimeSlotNotAvailable<T> extends ActivityState<T> {
 
   TimeSlotNotAvailable(this.listTimeNotAvailable);
 }
+class ActivityCompleted<T> extends ActivityState<T> {
+  final String message;
+
+  ActivityCompleted(this.message);
+}
+

@@ -108,7 +108,8 @@ class ActivityDetailsPage extends StatelessWidget {
                                     ),
                                     backgroundColor: Colors.grey[100],
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10)),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 2),
                                   ),
@@ -121,7 +122,8 @@ class ActivityDetailsPage extends StatelessWidget {
                                         const Icon(Icons.star,
                                             color: Colors.orange, size: 18),
                                         const SizedBox(width: 6),
-                                        Text("Popularity: ${activity.popularity}",
+                                        Text(
+                                            "Popularity: ${activity.popularity}",
                                             style: const TextStyle(
                                                 fontSize: 15,
                                                 color: Colors.black87)),
@@ -129,7 +131,8 @@ class ActivityDetailsPage extends StatelessWidget {
                                     ),
                                     backgroundColor: Colors.orange[50],
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10)),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10, vertical: 2),
                                   ),
@@ -167,7 +170,7 @@ class ActivityDetailsPage extends StatelessWidget {
                     child: ButtonZencitiContainer(
                       textButton: "Book Now",
                       onPressed: () {
-                          log("Navigating to reservation page for activity: ${activity.idActivity}");
+                        // log("Navigating to reservation page for activity: ${activity.idActivity}");
                         context.push('/activity/reservation', extra: {
                           "activityId": activity.idActivity,
                         });
@@ -187,4 +190,3 @@ class ActivityDetailsPage extends StatelessWidget {
     );
   }
 }
-
