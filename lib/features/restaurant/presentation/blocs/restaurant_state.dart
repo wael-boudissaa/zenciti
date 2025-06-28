@@ -23,6 +23,11 @@ class RestaurantFailure<T> extends RestaurantState<T> {
 
   RestaurantFailure(this.error);
 }
+class ReservationClientSuccess<T> extends RestaurantState<T> {
+    final List<ReservationClient> reservations;
+
+  ReservationClientSuccess(this.reservations);
+}
 
 class MenuSuccess<T> extends RestaurantState<T> {
   final List<MenuItem> menu;

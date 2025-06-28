@@ -1,3 +1,4 @@
+import 'package:zenciti/features/restaurant/domain/entities/restaurant.dart';
 import 'package:zenciti/features/restaurant/domain/entities/reviews.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 
@@ -21,7 +22,9 @@ abstract class RestaurantRepo {
     int rating,
     String comment,
   );
-  Future<List<ReviewProfile>>getFriendsReviews(String idRestaurant, String idClient);
+  Future<List<ReviewProfile>> getFriendsReviews(
+      String idRestaurant, String idClient);
+  Future<List<ReservationClient>> getReservationsByClient(String idClient);
   // Future<List<Activity>> getActivitiesByType(String activityType);
   // Future<List<Activity>> getActivitiesByPopularity();
   // Future<Activity> getActivityById(String activityId);

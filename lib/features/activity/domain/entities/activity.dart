@@ -34,7 +34,7 @@ class Activity {
   String descriptionActivity;
   String typeActivity;
   String imageActivity;
-  
+
   int popularity;
   Activity({
     required this.idActivity,
@@ -110,5 +110,47 @@ class ActivityProfile {
   @override
   String toString() {
     return 'ActivityProfile{idActivity: $idActivity, nameActivity: $nameActivity, descriptionActivity: $descriptionActivity, imageActivity: $imageActivity, popularity: $popularity, timeActivity: $timeActivity}';
+  }
+}
+
+class ActivityClient {
+  String idClientActivity;
+  String activityName;
+  String activityDescription;
+  String activityImage;
+  String status;
+  DateTime timeActivity;
+  ActivityClient({
+    required this.idClientActivity,
+    required this.activityName,
+    required this.activityDescription,
+    required this.activityImage,
+    required this.status,
+    required this.timeActivity,
+  });
+  factory ActivityClient.fromJson(Map<String, dynamic> json) {
+    return ActivityClient(
+      idClientActivity: json['idClientActivity'],
+      activityName: json['activityName'],
+      activityDescription: json['activityDescription'],
+      activityImage: json['activityImage'],
+      status: json['status'],
+      timeActivity: DateTime.parse(json['timeActivity']),
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'idClientActivity': idClientActivity,
+      'activityName': activityName,
+      'activityDescription': activityDescription,
+      'activityImage': activityImage,
+      'status': status,
+      'timeActivity': timeActivity.toIso8601String(),
+    };
+  }
+
+  @override
+  String toString() {
+    return 'ActivityClient{idClientActivity: $idClientActivity, activityName: $activityName, activityDescription: $activityDescription, activityImage: $activityImage, status: $status, timeActivity: $timeActivity}';
   }
 }

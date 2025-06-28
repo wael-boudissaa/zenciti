@@ -29,9 +29,15 @@ class TimeSlotNotAvailable<T> extends ActivityState<T> {
 
   TimeSlotNotAvailable(this.listTimeNotAvailable);
 }
+
 class ActivityCompleted<T> extends ActivityState<T> {
   final String message;
 
   ActivityCompleted(this.message);
 }
 
+class ActivityClientSuccess<T> extends ActivityState<T> {
+  final List<ActivityClient> activities;
+
+  ActivityClientSuccess(this.activities);
+}

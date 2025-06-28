@@ -150,4 +150,19 @@ class ActiviteTypeRepoImp implements ActivityRepo {
       throw Exception('Failed to complete activity: $e');
     }
   }
+
+  @override
+  Future<List<ActivityClient>> getActivityClient(String idClient) async {
+    try {
+      final response = await apiClient.get('/client/$idClient/activities');
+      final List<dynamic> data = response['data']; // Fix: use List<dynamic>
+      log('Response: $data');
+      final activities = data
+          .map((json) => ActivityClient.fromJson(json as Map<String, dynamic>))
+          .toList();
+      return activities;
+    } catch (e) {
+      throw Exception('Failed to load client activities: $e');
+    }
+  }
 }

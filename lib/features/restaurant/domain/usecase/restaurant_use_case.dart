@@ -1,6 +1,7 @@
 // domain/use_cases/login_use_case.dart
 
 import 'package:zenciti/features/restaurant/domain/entities/menu.dart';
+import 'package:zenciti/features/restaurant/domain/entities/restaurant.dart';
 import 'package:zenciti/features/restaurant/domain/entities/reviews.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
@@ -41,5 +42,10 @@ class RestaurantUseCase {
   Future<List<ReviewProfile>> getFriendsReviews(
       String idRestaurant, String idClient) async {
     return await _repository.getFriendsReviews(idRestaurant, idClient);
+  }
+
+  Future<List<ReservationClient>> getReservationsByClient(
+      String idClient) async {
+    return await _repository.getReservationsByClient(idClient);
   }
 }

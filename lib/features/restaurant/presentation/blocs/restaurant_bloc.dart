@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:zenciti/features/restaurant/domain/entities/restaurant.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_table_use_case.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_use_case.dart';
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.dart';
@@ -13,6 +14,7 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
     on<RestaurantGetById>(_onRestaurantGetById);
     on<OrderFood>(_onOrderFood);
     on<CreateReservation>(_onCreateReservation);
+    on<GetReservationsByClient>(_onReservationClient);
   }
 
   Future<void> _onRestaurantGetAll(
@@ -34,6 +36,18 @@ class RestaurantBloc extends Bloc<RestaurantEvent, RestaurantState> {
     try {
       final restaurant = await restaurantUseCase.getRestaurantById(event.id);
       emit(RestaurantSingleSuccess(restaurant));
+    } catch (e) {
+      emit(RestaurantFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onReservationClient(
+      GetReservationsByClient event, Emitter<RestaurantState> emit) async {
+    emit(RestaurantLoading());
+    try {
+      final reservations =
+          await restaurantUseCase.getReservationsByClient(event.idClient);
+      emit(ReservationClientSuccess(reservations));
     } catch (e) {
       emit(RestaurantFailure(e.toString()));
     }

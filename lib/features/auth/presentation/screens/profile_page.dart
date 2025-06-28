@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:zenciti/app/config/theme.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_type_bloc.dart';
 import 'package:zenciti/features/auth/domain/entities/user.dart';
@@ -45,29 +46,30 @@ class ProfilePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(20, 22, 20, 12),
                       child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          const Expanded(child: SizedBox()),
-                          const Expanded(
-                            child: Center(
-                              child: Text(
-                                "Profile",
-                                style: TextStyle(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black,
+                          // const Expanded(child: SizedBox()),
+                             Row(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                    icon: const FaIcon(FontAwesomeIcons.gear,
+                                        size: 23, color: Colors.black87),
+                                    onPressed: () {},
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                icon: const FaIcon(FontAwesomeIcons.gear,
-                                    size: 23, color: Colors.grey),
-                                onPressed: () {},
-                              ),
-                            ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: IconButton(
+                                    icon: const FaIcon(FontAwesomeIcons.history,
+                                        size: 23, color: Colors.black87),
+                                    onPressed: () {
+                                      context.push('/activity-history');
+                                    },
+                                  ),
+                                ),
+                              ],
                           ),
                         ],
                       ),
@@ -76,6 +78,7 @@ class ProfilePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(height: 6),
                           Container(
@@ -119,14 +122,13 @@ class ProfilePage extends StatelessWidget {
                           const SizedBox(height: 12),
                           // Stats
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            // crossAxisAlignment: CrossAxisAlignment.spa,
                             children: [
                               ProfileStat(label: "Rated", value: "0"),
-                              const SizedBox(width: 30),
                               ProfileStat(
                                   label: "Followers",
                                   value: user.followers.toString()),
-                              const SizedBox(width: 30),
                               ProfileStat(
                                   label: "Following",
                                   value: user.following.toString()),
@@ -248,6 +250,7 @@ class ProfileStat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(value,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),

@@ -12,5 +12,7 @@ abstract class ActivityRepo {
   Future<String> createActivity(
       String ActivityId, String idClient, DateTime TimeActivity);
   Future<List<String>> getTimeNotAvaialble(String idActivity, String day);
+
   Future<String> CompleteActivity(String idClientActivity);
+  Future<List<ActivityClient>> getActivityClient(String idClient);
 }

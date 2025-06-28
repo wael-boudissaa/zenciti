@@ -15,6 +15,7 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
     on<ActivityCreate>(_onActivityCreate);
     on<GetTimeNotAvailable>(_onGetTimeNotAvailable);
     on<CompleteActivity>(_onCompleteActivity);
+    on<GetActivityClient>(_onActivityTypeGet);
   }
 
   Future<void> _onActivityGetByType(
@@ -141,6 +142,26 @@ class ActivityBloc extends Bloc<ActivityEvent, ActivityState> {
       emit(ActivityCompleted(result));
     } catch (e, stackTrace) {
       log("Error completing activity", error: e, stackTrace: stackTrace);
+      emit(ActivityFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onActivityTypeGet(
+    GetActivityClient event,
+    Emitter<ActivityState> emit,
+  ) async {
+    emit(ActivityLoading());
+
+    try {
+      final activities =
+          await activityUseCase.getActivityClient(event.idClient);
+
+      log("Fetched Activity Client: $activities");
+
+      // Emit success state with the fetched activities
+      emit(ActivityClientSuccess(activities));
+    } catch (e, stackTrace) {
+      log("Error fetching activity client", error: e, stackTrace: stackTrace);
       emit(ActivityFailure(e.toString()));
     }
   }

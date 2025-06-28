@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zenciti/features/restaurant/domain/entities/menu.dart';
+import 'package:zenciti/features/restaurant/domain/entities/restaurant.dart';
 import 'package:zenciti/features/restaurant/domain/entities/reviews.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_table_use_case.dart';

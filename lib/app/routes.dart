@@ -11,6 +11,7 @@ import 'package:zenciti/features/activity/domain/usecase/ativity_use_case.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_event.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_single.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_details.dart';
+import 'package:zenciti/features/activity/presentation/screens/activity_history.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_res.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_reservation.dart';
 import 'package:zenciti/features/activity/presentation/screens/activity_type.dart';
@@ -106,6 +107,42 @@ class AppRouter {
       GoRoute(
         path: '/home',
         builder: (context, state) => HomePage(),
+      ),
+      GoRoute(
+        path: '/activity-history',
+        builder: (context, state) {
+          return FutureBuilder<String?>(
+            future: getIdClient(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              final idClient = snapshot.data!;
+              final apiClient =
+                  buildApiClient(); // avoid calling it multiple times
+
+              return MultiBlocProvider(
+                providers: [
+                  BlocProvider(
+                      create: (context) => RestaurantBloc(
+                            RestaurantUseCase(
+                              RestaurantRepoImpl(apiClient: apiClient),
+                            ),
+                          )),
+                  BlocProvider(
+                    create: (context) => ActivityBloc(
+                      ActivityUseCase(
+                        ActiviteTypeRepoImp(apiClient: apiClient),
+                      ),
+                    ),
+                  ),
+                ],
+                child: ActivityHistoryPage(idClient: idClient),
+              );
+            },
+          );
+        },
       ),
       GoRoute(
         path: '/reservation/qr',

@@ -29,4 +29,7 @@ class ActivityUseCase {
   Future<String> completeActivity(String idClientActivity) async {
     return await _repository.CompleteActivity(idClientActivity);
   }
+    Future<List<ActivityClient>> getActivityClient(String idClient) async {
+        return await _repository.getActivityClient(idClient);
+    }
 }

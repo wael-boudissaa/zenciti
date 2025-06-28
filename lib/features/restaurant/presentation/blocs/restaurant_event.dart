@@ -21,7 +21,7 @@ class RestaurantGetAll extends RestaurantEvent {
 }
 
 class CreateReservation extends RestaurantEvent {
-    final String idClient;
+  final String idClient;
   final String idRestaurant;
   final String idTable;
   final DateTime timeFrom;
@@ -33,7 +33,7 @@ class CreateReservation extends RestaurantEvent {
     required this.idRestaurant,
     required this.idTable,
     required this.timeFrom,
-     this.timeTo,
+    this.timeTo,
     required this.numberOfPeople,
   });
 }
@@ -61,14 +61,11 @@ class OrderFood extends RestaurantEvent {
   });
 }
 
-
-
 abstract class ReviewsEvent extends Equatable {
   const ReviewsEvent();
 
   @override
   List<Object> get props => [];
-
 }
 
 class RatingRestaurant extends ReviewsEvent {
@@ -83,7 +80,6 @@ class RatingRestaurant extends ReviewsEvent {
     required this.rating,
     required this.comment,
   });
-
 }
 
 class GetFriendsReviews extends ReviewsEvent {
@@ -96,3 +92,10 @@ class GetFriendsReviews extends ReviewsEvent {
   });
 }
 
+class GetReservationsByClient extends RestaurantEvent {
+  final String idClient;
+
+  const GetReservationsByClient({
+    required this.idClient,
+  });
+}

@@ -14,6 +14,7 @@ class ActivityGet extends ActivityEvent {
 }
 
 class ActivityPopulaireGet extends ActivityEvent {}
+
 class GetActivityById extends ActivityEvent {
   final String idActivity;
 
@@ -42,8 +43,16 @@ class GetTimeNotAvailable extends ActivityEvent {
 
   GetTimeNotAvailable(this.idActivity, this.day);
 }
+
 class CompleteActivity extends ActivityEvent {
   final String idClientActivity;
 
   CompleteActivity(this.idClientActivity);
 }
+
+class GetActivityClient extends ActivityEvent {
+  final String idClient;
+
+  GetActivityClient(this.idClient);
+}
+

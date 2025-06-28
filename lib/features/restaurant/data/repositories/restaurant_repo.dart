@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:zenciti/core/utils/api_client.dart';
 import 'package:zenciti/features/restaurant/domain/entities/menu.dart';
+import 'package:zenciti/features/restaurant/domain/entities/restaurant.dart';
 import 'package:zenciti/features/restaurant/domain/entities/reviews.dart';
 import 'package:zenciti/features/restaurant/domain/entities/tables.dart';
 import 'package:zenciti/features/restaurant/domain/repositories/restaurant_repo.dart';
@@ -194,6 +195,25 @@ class RestaurantRepoImpl implements RestaurantRepo {
     } catch (e) {
       print('Error fetching friends reviews: $e');
       throw Exception('Failed to load friends reviews');
+    }
+  }
+
+  @override
+  Future<List<ReservationClient>> getReservationsByClient(
+      String idClient) async {
+    try {
+      final fullUrl = '/client/$idClient/reservations';
+      print('GET → $fullUrl');
+      final response = await apiClient.get(fullUrl);
+      log('Raw response from /reservation/client/$idClient → $response');
+      final List<dynamic> data = response['data'];
+      log('Response: $data');
+      final reservations =
+          data.map((json) => ReservationClient.fromJson(json)).toList();
+      return reservations;
+    } catch (e) {
+      print('Error fetching reservations by client: $e');
+      throw Exception('Failed to load reservations by client');
     }
   }
 }
