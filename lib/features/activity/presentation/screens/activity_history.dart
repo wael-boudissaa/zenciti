@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:zenciti/features/activity/domain/entities/activity.dart';
 import 'package:zenciti/features/activity/presentation/blocs/activity_bloc.dart';
@@ -707,6 +708,26 @@ class _ReservationQrDialog extends StatelessWidget {
             const SizedBox(height: 10),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
+                backgroundColor: primary,
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 13, horizontal: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                textStyle: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              icon: const Icon(Icons.add, size: 20),
+              onPressed: () => {
+                context.push('/order', extra: {
+                  "idRestaurant": reservation.idRestaurant,
+                  "reservationId": reservation.idReservation,
+                }),
+              },
+              label: const Text('Add'),
+            ),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
                 foregroundColor: Colors.white,
                 padding:
@@ -928,5 +949,3 @@ class _FilterTabs extends StatelessWidget {
     );
   }
 }
-
-
