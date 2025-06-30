@@ -34,6 +34,7 @@ import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_event.
 import 'package:zenciti/features/restaurant/presentation/blocs/restaurant_table_bloc.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/menu.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/orderPage.dart';
+import 'package:zenciti/features/restaurant/presentation/screens/reservation_information.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/reservation_test.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/reservation_QrCode.dart';
 import 'package:zenciti/features/restaurant/presentation/screens/restaurant_details_test.dart';
@@ -108,6 +109,10 @@ class AppRouter {
         path: '/home',
         builder: (context, state) => HomePage(),
       ),
+      // GoRoute(
+      //   path: '/reservaiton-information',
+      //   builder: (context, state) => ReservationInformationPage(),
+      // ),
       GoRoute(
         path: '/activity-history',
         builder: (context, state) {

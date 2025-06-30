@@ -35,6 +35,7 @@ class Menu {
 class Food {
   final String idFood;
   final String name;
+  final String? idRestaurant;
   final String? description;
   final String? image;
   final double? price;
@@ -44,6 +45,7 @@ class Food {
   Food({
     required this.idFood,
     required this.name,
+    this.idRestaurant,
     this.price,
     this.description,
     this.image,
@@ -55,6 +57,7 @@ class Food {
     return Food(
       idFood: json['idFood'],
       name: json['name'],
+      idRestaurant: json['idRestaurant'],
       description: json['description'],
       image: json['image'],
       price: json['price'],
@@ -67,6 +70,7 @@ class Food {
     return {
       'idFood': idFood,
       'name': name,
+      'idRestaurant': idRestaurant,
       'description': description,
       'price': price,
       'image': image,
@@ -116,6 +120,8 @@ class MenuItem {
   final String menuName;
   final String idFood;
   final String idCategory;
+  final String idRestaurant;
+
   final String name;
   final String description;
   final String image;
@@ -125,6 +131,7 @@ class MenuItem {
   MenuItem({
     required this.idMenu,
     required this.menuName,
+    required this.idRestaurant,
     required this.idFood,
     required this.idCategory,
     required this.name,
@@ -138,6 +145,7 @@ class MenuItem {
     return MenuItem(
       idMenu: json['idMenu'],
       menuName: json['menuName'],
+        idRestaurant: json['idRestaurant'],
       idFood: json['idFood'],
       idCategory: json['idCategory'],
       name: json['name'],
@@ -155,6 +163,7 @@ class MenuItem {
       'idCategory': idCategory,
       'name': name,
       'description': description,
+        'idRestaurant': idRestaurant,
       'image': image,
       'price': price,
       'menuName': menuName,

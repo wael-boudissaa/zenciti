@@ -2,6 +2,8 @@ class RestaurantTable {
   final String? idTable;
   final String? idReservation;
   final int? numberOfPeople;
+  final String? shape;
+
   final int? posX;
   final int? posY;
   final DateTime? timeFrom;
@@ -11,6 +13,7 @@ class RestaurantTable {
   RestaurantTable({
     required this.idTable,
     required this.idReservation,
+    required this.shape,
     required this.numberOfPeople,
     required this.posX,
     required this.posY,
@@ -24,6 +27,7 @@ class RestaurantTable {
       idTable: json['idTable'],
       idReservation: json['idReservation'],
       numberOfPeople: json['numberOfPeople'],
+      shape: json['shape'], // parse shape
       posX: json['posX'],
       posY: json['posY'],
       timeFrom:
@@ -38,6 +42,7 @@ class RestaurantTable {
       'idTable': idTable,
       'idReservation': idReservation,
       'numberOfPeople': numberOfPeople,
+        'shape': shape, // serialize shape
       'posX': posX,
       'posY': posY,
       'timeFrom': timeFrom?.toIso8601String(),
