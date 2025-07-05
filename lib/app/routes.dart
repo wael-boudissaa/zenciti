@@ -25,6 +25,9 @@ import 'package:zenciti/features/auth/presentation/blocs/sign_up_event.dart';
 import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
 import 'package:zenciti/features/auth/presentation/screens/notification_page.dart';
 import 'package:zenciti/features/auth/presentation/screens/profile_page_username.dart';
+import 'package:zenciti/features/home/data/repositories/map_information.dart';
+import 'package:zenciti/features/home/domain/usecase/map_use_case.dart';
+import 'package:zenciti/features/home/presentation/blocs/map_bloc.dart';
 import 'package:zenciti/features/home/presentation/screens/home_screen.dart';
 import 'package:zenciti/features/home/presentation/screens/map_page.dart';
 import 'package:zenciti/features/restaurant/data/repositories/restaurant_repo.dart';
@@ -79,9 +82,19 @@ class AppRouter {
       ),
       GoRoute(
         path: '/map',
-        builder: (context, state) => MapScreen(),
+        builder: (context, state) {
+          return BlocProvider(
+            create: (context) => MapBloc(
+              MapUseCase(
+                MapImpl(
+                  apiClient: buildApiClient(),
+                ),
+              ),
+            ),
+            child: const MapScreen(),
+          );
+        },
       ),
-
       GoRoute(
         path: '/profile/:username',
         builder: (context, state) {
