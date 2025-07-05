@@ -151,7 +151,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       description:
           Text(message, style: const TextStyle(fontWeight: FontWeight.w500)),
       animationDuration: const Duration(milliseconds: 500),
-      position: MotionToastPosition.top,
+      // position: MotionToastPosition.top,
     ).show(context);
   }
 
@@ -160,7 +160,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       description:
           Text(error, style: const TextStyle(fontWeight: FontWeight.w500)),
       animationDuration: const Duration(milliseconds: 500),
-      position: MotionToastPosition.top,
+      // position: MotionToastPosition.top,
     ).show(context);
   }
 

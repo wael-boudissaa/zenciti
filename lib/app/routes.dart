@@ -26,6 +26,7 @@ import 'package:zenciti/features/auth/presentation/screens/login_screen.dart';
 import 'package:zenciti/features/auth/presentation/screens/notification_page.dart';
 import 'package:zenciti/features/auth/presentation/screens/profile_page_username.dart';
 import 'package:zenciti/features/home/presentation/screens/home_screen.dart';
+import 'package:zenciti/features/home/presentation/screens/map_page.dart';
 import 'package:zenciti/features/restaurant/data/repositories/restaurant_repo.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_table_use_case.dart';
 import 'package:zenciti/features/restaurant/domain/usecase/restaurant_use_case.dart';
@@ -76,6 +77,11 @@ class AppRouter {
         path: '/',
         builder: (context, state) => const LoginScreen(),
       ),
+      GoRoute(
+        path: '/map',
+        builder: (context, state) => MapScreen(),
+      ),
+
       GoRoute(
         path: '/profile/:username',
         builder: (context, state) {

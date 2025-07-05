@@ -121,7 +121,6 @@ class MenuItem {
   final String idFood;
   final String idCategory;
   final String idRestaurant;
-
   final String name;
   final String description;
   final String image;

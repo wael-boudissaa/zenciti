@@ -11,7 +11,8 @@ class AppBarHome extends StatelessWidget implements PreferredSizeWidget {
   const AppBarHome({
     super.key,
     this.username = "Wael",
-    this.avatarUrl = "https://docs.flutter.dev/assets/images/dash/dash-fainting.gif",
+    this.avatarUrl =
+        "https://docs.flutter.dev/assets/images/dash/dash-fainting.gif",
     this.notificationCount = 5,
   });
 

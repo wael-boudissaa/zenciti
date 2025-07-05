@@ -42,8 +42,10 @@ class _MenuPageState extends State<MenuPage> {
               final menu = state.menu;
               final filteredMenu = selectedCategory == "All"
                   ? menu
-                  : menu.where((item) => item.idCategory == selectedCategory).toList();
-        
+                  : menu
+                      .where((item) => item.idCategory == selectedCategory)
+                      .toList();
+
               return Stack(
                 children: [
                   ListView(
@@ -51,7 +53,8 @@ class _MenuPageState extends State<MenuPage> {
                     children: [
                       // Header
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 13),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -98,7 +101,8 @@ class _MenuPageState extends State<MenuPage> {
                       ),
                       // Menu Section Divider
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 16),
                         child: Row(
                           children: const [
                             Text("Menu",
@@ -123,13 +127,15 @@ class _MenuPageState extends State<MenuPage> {
                       ),
                       // Categories
                       Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20, top: 30, bottom: 8),
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, top: 30, bottom: 8),
                         child: Text("Categories",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18)),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 6),
                         child: Wrap(
                           spacing: 10,
                           runSpacing: 8,
@@ -169,7 +175,8 @@ class _MenuPageState extends State<MenuPage> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border(top: BorderSide(color: Colors.grey.shade200)),
+                        border: Border(
+                            top: BorderSide(color: Colors.grey.shade200)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.04),
@@ -178,7 +185,8 @@ class _MenuPageState extends State<MenuPage> {
                           ),
                         ],
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 14),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -219,7 +227,8 @@ class _MenuItemCard extends StatelessWidget {
   final MenuItem item;
   final bool last;
 
-  const _MenuItemCard({required this.item, required this.last, Key? key}) : super(key: key);
+  const _MenuItemCard({required this.item, required this.last, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

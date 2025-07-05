@@ -1,0 +1,2 @@
+/home/wael-boudissa/Desktop/Project/Zenciti/zenciti/android/app/.cxx/RelWithDebInfo/311q72p6/x86_64/CMakeFiles/edit_cache.dir
+/home/wael-boudissa/Desktop/Project/Zenciti/zenciti/android/app/.cxx/RelWithDebInfo/311q72p6/x86_64/CMakeFiles/rebuild_cache.dir
